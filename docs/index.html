@@ -5,6 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VOID CLIENT — The future of Minecraft launching</title>
     <meta name="description" content="VOID CLIENT. A chromium-fast Minecraft launcher with a living dither background, Microsoft login, mods and every version from alpha to snapshot.">
+    <meta name="theme-color" content="#050508">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="VOID CLIENT">
+    <meta property="og:title" content="VOID CLIENT — The future of Minecraft launching">
+    <meta property="og:description" content="A chromium-fast Minecraft launcher with a living dither background, Microsoft login, mods and every version from alpha to snapshot.">
+    <meta property="og:image" content="https://markipler609.github.io/VoidClient/social-og.png">
+    <meta property="og:url" content="https://markipler609.github.io/VoidClient/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="VOID CLIENT">
+    <meta name="twitter:description" content="A chromium-fast Minecraft launcher with a living dither background.">
+    <meta name="twitter:image" content="https://markipler609.github.io/VoidClient/social-og.png">
+    <link rel="canonical" href="https://markipler609.github.io/VoidClient/">
+    <link rel="alternate" type="application/atom+xml" title="VOID CLIENT releases" href="feed.xml">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="Voidicon16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="Voidicon32x32.png">
@@ -217,22 +230,32 @@
                 <h2>Launch. Instantly.</h2>
                 <p class="dp-sub">VOID CLIENT is a portable Electron app. Download, unzip, run — that&#8217;s it.</p>
                 <div class="dp-btns">
-                    <a class="btn btn-primary btn-lg magnetic" href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.0/VOID_Launcher.exe" target="_blank" rel="noopener">
+                    <a class="btn btn-primary btn-lg magnetic" href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.1/VOID_Launcher.exe" target="_blank" rel="noopener">
                         <span class="btn-shine"></span>
                         <span class="os-glyph">&#9681;</span>
                         <span class="os-txt"><small>Download for</small>Windows</span>
                     </a>
-                    <a class="btn btn-ghost btn-lg magnetic" href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.0/void-client-1.0.0.tar.gz" target="_blank" rel="noopener">
+                    <a class="btn btn-ghost btn-lg magnetic" href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.1/void-client-1.0.1.tar.gz" target="_blank" rel="noopener">
                         <span class="os-glyph">&#9733;</span>
                         <span class="os-txt"><small>Download for</small>Linux</span>
                     </a>
                 </div>
-                <p class="dp-note">Release 1.0.0 &#8212; Windows portable + installer, Linux tar.gz. You need Java 21+ to play; Discord shows your Rich Presence.</p>
+                <p class="dp-note">Release 1.0.1 &#8212; Windows portable + installer, Linux tar.gz, macOS. You need Java 21+ to play; Discord shows your Rich Presence.</p>
                 <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px;">
                     <img alt="Release" src="https://img.shields.io/github/v/release/Markipler609/VoidClient?color=%23464646&label=release">
                     <img alt="Downloads" src="https://img.shields.io/github/downloads/Markipler609/VoidClient/total?color=%23464646&label=downloads">
                     <img alt="License" src="https://img.shields.io/github/license/Markipler609/VoidClient?color=%23464646&label=license">
                 </div>
+                <p style="font-size:13px;color:var(--text-dim);margin-top:12px;">All builds &#8212; <span style="color:var(--text)">from the GitHub Release</span></p>
+                <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:6px;font-size:12px;">
+                    <a href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.1/VOID_Launcher.exe">Windows portable</a>&nbsp;&#183;
+                    <a href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.1/VOID_Client_Setup_1.0.1.exe">Windows installer</a>&nbsp;&#183;
+                    <a href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.1/void-client-1.0.1.tar.gz">Linux</a>&nbsp;&#183;
+                    <a href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.1/VOID_Client_1.0.1-x64.dmg">macOS Intel</a>&nbsp;&#183;
+                    <a href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.1/VOID_Client_1.0.1-arm64.dmg">macOS Apple&nbsp;Silicon</a>
+                </div>
+                <p style="font-size:13px;color:var(--text-dim);margin-top:12px;"><span id="dl-counter">&#8211;</span> downloads served from this page.</p>
+                <script>try{(function(){var e=document.getElementById('dl-counter');if(!e)return;fetch('counter.php').then(function(r){if(!r.ok)return null;return r.json()}).then(function(d){if(d) e.textContent=d.downloads||0}).catch(function(){})})()}catch(_){}</script>
             </div>
         </section>
 

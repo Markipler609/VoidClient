@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, dialog, safeStorage, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, safeStorage, shell, Notification } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { spawn, execSync } = require('child_process');
@@ -62,6 +62,64 @@ function logWarn(msg) { log(`[WARN] ${msg}`); }
 log('=== VOID CLIENT STARTED ===');
 log(`Electron ${process.versions.electron}, Node ${process.versions.node}, Chrome ${process.versions.chrome}`);
 
+// ═══════════════ SETTINGS ═══════════════
+const SETTINGS_PATH = path.join(app.getPath('home'), '.voidclient', 'settings.json');
+function loadSettings() { try { return JSON.parse(fs.readFileSync(SETTINGS_PATH, 'utf8')); } catch { return {}; } }
+function saveSettings(s) { try { fs.writeFileSync(SETTINGS_PATH, JSON.stringify(s, null, 2), 'utf8'); } catch {} }
+
+// ═══════════════ TELEMETRY (anonymous, one ping per day) ═══════════════
+// Endpoint hosted on the primary site. Override with the VOID_TELEMETRY_URL env var.
+const TELEMETRY_URL = process.env.VOID_TELEMETRY_URL || 'https://x95027pc.beget.tech/api/telemetry.php';
+
+function getInstallId(settings) {
+    if (settings.installId) return settings.installId;
+    settings.installId = crypto.randomUUID();
+    return settings.installId;
+}
+
+function telemetryPost(url, payload) {
+    return new Promise((resolve) => {
+        const mod = url.startsWith('https') ? https : http;
+        const req = mod.request(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': Buffer.byteLength(payload),
+                'User-Agent': 'VoidClient/' + app.getVersion(),
+            },
+        }, (res) => { res.resume(); res.on('end', () => resolve(res.statusCode)); });
+        req.on('error', () => resolve(0));
+        req.setTimeout(8000, () => { req.destroy(); resolve(0); });
+        req.write(payload);
+        req.end();
+    });
+}
+
+async function postTelemetry() {
+    try {
+        const settings = loadSettings();
+        if (settings.telemetryDisabled === true) { log('Telemetry disabled by settings'); return; }
+        const today = new Date().toISOString().substring(0, 10);
+        if (settings.lastTelemetry === today) { log('Telemetry already sent today'); return; }
+        const payload = JSON.stringify({
+            install_id: getInstallId(settings),
+            version: app.getVersion(),
+            platform: process.platform,
+            arch: process.arch,
+            date: today,
+        });
+        let code = await telemetryPost(TELEMETRY_URL, payload);
+        if (code !== 200 && code !== 204) code = await telemetryPost(TELEMETRY_URL.replace(/^https:/, 'http:'), payload);
+        if (code === 200 || code === 204) {
+            settings.lastTelemetry = today;
+            saveSettings(settings);
+            log(`Telemetry ping sent (HTTP ${code})`);
+        } else {
+            logWarn(`Telemetry endpoint unreachable (HTTP ${code}) — will retry next launch`);
+        }
+    } catch (e) { logWarn(`Telemetry failed: ${e.message}`); }
+}
+
 // ═══════════════ DISCORD RICH PRESENCE ═══════════════
 const discordRpc = require('./src/discord-rpc.js');
 discordRpc.setLogger(log);
@@ -97,6 +155,8 @@ app.whenReady().then(async () => {
     createWindow();
     await discordRpc.init();
     discordRpc.setMenu();
+    setTimeout(checkForUpdates, 5000);
+    setTimeout(postTelemetry, 3000);
 });
 app.on('window-all-closed', () => { log('All windows closed'); discordRpc.shutdown(); if (process.platform !== 'darwin') app.quit(); });
 app.on('before-quit', () => discordRpc.shutdown());
@@ -225,6 +285,138 @@ function httpGet(url, maxRedirects = 5) {
         req.on('error', reject);
         req.setTimeout(30000, () => { req.destroy(); reject(new Error('Timeout')); });
     });
+}
+
+// ═══════════════ SELF-UPDATE CHECK ═══════════════
+const UPDATE_MANIFEST_URL = process.env.VOID_UPDATE_MANIFEST || 'https://markipler609.github.io/VoidClient/version.json';
+const UPDATE_DOWNLOAD_URL = 'https://github.com/Markipler609/VoidClient/releases';
+
+function newerVersion(a, b) {
+    const pa = String(a).split('.').map(n => parseInt(n, 10) || 0);
+    const pb = String(b).split('.').map(n => parseInt(n, 10) || 0);
+    const len = Math.max(pa.length, pb.length);
+    for (let i = 0; i < len; i++) {
+        const x = pa[i] || 0, y = pb[i] || 0;
+        if (x > y) return true;
+        if (x < y) return false;
+    }
+    return false;
+}
+
+function sha256File(p) {
+    return new Promise((resolve, reject) => {
+        const hash = crypto.createHash('sha256');
+        fs.createReadStream(p).on('data', d => hash.update(d)).on('end', () => resolve(hash.digest('hex'))).on('error', reject);
+    });
+}
+
+function pickDownload(data) {
+    if (!data || !data.downloads) return null;
+    const dl = data.downloads;
+    if (process.platform === 'win32') return dl.win_installer || dl.win_portable;
+    if (process.platform === 'darwin') return dl.mac_arm64 || dl.mac_x64;
+    return dl.linux;
+}
+
+function showNotices(data) {
+    try {
+        const notices = Array.isArray(data?.notices) ? data.notices : [];
+        if (!notices.length) return;
+        const settings = loadSettings();
+        const seen = settings.seenNotices || {};
+        let changed = false;
+        for (const n of notices) {
+            if (!n || !n.id || seen[n.id]) continue;
+            seen[n.id] = true;
+            changed = true;
+            try {
+                new Notification({ title: n.title || 'VOID CLIENT', body: n.body || 'Update available', silent: false }).show();
+            } catch (e) { logWarn(`Notice notify failed: ${e.message}`); }
+        }
+        if (changed) { settings.seenNotices = seen; saveSettings(settings); }
+    } catch (e) { logWarn(`showNotices failed: ${e.message}`); }
+}
+
+async function applyUpdate(data) {
+    const target = pickDownload(data);
+    if (!target || !target.url) { shell.openExternal(UPDATE_DOWNLOAD_URL); return; }
+    const remote = String(data.version || '');
+    try {
+        const updDir = path.join(app.getPath('temp'), 'voidclient-update');
+        if (!fs.existsSync(updDir)) fs.mkdirSync(updDir, { recursive: true });
+        const fileName = (String(target.url).split('/').pop() || 'VOID_Client_Setup.exe').split('?')[0];
+        const destPath = path.join(updDir, fileName + '.new');
+        log(`Downloading update ${remote} → ${destPath}`);
+        await downloadFile(target.url, destPath);
+        const size = fs.statSync(destPath).size;
+        if (target.sha256) {
+            const h = await sha256File(destPath);
+            if (h.toLowerCase() !== String(target.sha256).toLowerCase()) {
+                logError(`Update checksum mismatch (got ${h})`);
+                try { fs.unlinkSync(destPath); } catch {}
+                const bad = await dialog.showMessageBox(mainWindow, {
+                    type: 'error',
+                    title: 'VOID CLIENT — update failed',
+                    message: 'The downloaded update failed the SHA-256 check.',
+                    detail: 'Grab the build manually from the releases page instead.',
+                    buttons: ['Open releases', 'Close'],
+                    defaultId: 0, cancelId: 1
+                });
+                if (bad.response === 0) shell.openExternal(UPDATE_DOWNLOAD_URL);
+                return;
+            }
+            log(`Update checksum OK (${h})`);
+        } else {
+            log('Update manifest has no SHA-256, skipping verification');
+        }
+        const r = await dialog.showMessageBox(mainWindow, {
+            type: 'info',
+            title: 'VOID CLIENT — update ready',
+            message: `VOID CLIENT ${remote} is downloaded (${Math.round(size / 1048576)} MB).`,
+            detail: process.platform === 'win32'
+                ? 'The installer will replace your current copy silently.'
+                : 'Opening the downloads page so you can finish the update.',
+            buttons: process.platform === 'win32' ? ['Install now', 'Later'] : ['Open downloads', 'Later'],
+            defaultId: 0,
+            cancelId: 1
+        });
+        if (process.platform === 'win32' && r.response === 0) {
+            log(`Launching silent installer: ${destPath} /S`);
+            const child = spawn(destPath, ['/S'], { detached: true, stdio: 'ignore' });
+            child.unref();
+            setTimeout(() => app.quit(), 1500);
+        } else {
+            shell.openExternal(UPDATE_DOWNLOAD_URL);
+        }
+    } catch (e) {
+        logError(`Update download failed: ${e.message}`);
+    }
+}
+
+async function checkForUpdates() {
+    try {
+        log('Checking for updates...');
+        const data = await httpGet(UPDATE_MANIFEST_URL);
+        showNotices(data);
+        const remote = String(data?.version || '').trim();
+        const current = app.getVersion();
+        if (!remote || remote === current) { log(`Update check: up to date (${current})`); return; }
+        if (!newerVersion(remote, current)) { log(`Update check: current ${current} >= remote ${remote}`); return; }
+        log(`Update available: ${remote} (running ${current})`);
+        const r = await dialog.showMessageBox(mainWindow, {
+            type: 'info',
+            title: 'VOID CLIENT — update available',
+            message: `VOID CLIENT ${remote} is available.`,
+            detail: `You're on ${current}. Install or download the new build.`,
+            buttons: ['Update now', 'Open downloads', 'Later'],
+            defaultId: 0,
+            cancelId: 2
+        });
+        if (r.response === 0) await applyUpdate(data);
+        else if (r.response === 1) shell.openExternal(UPDATE_DOWNLOAD_URL);
+    } catch (e) {
+        log(`Update check failed: ${e.message}`);
+    }
 }
 
 // ═══════════════ MC VERSION MANIFEST ═══════════════

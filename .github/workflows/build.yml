@@ -19,6 +19,10 @@ jobs:
             args: --win
           - os: ubuntu-latest
             args: --linux
+          - os: macos-14
+            args: --mac --x64
+          - os: macos-14
+            args: --mac --arm64
     runs-on: ${{ matrix.os }}
     env:
       CSC_IDENTITY_AUTO_DISCOVERY: "false"
@@ -49,6 +53,8 @@ jobs:
           cp "VOID CLIENT $V.exe" "$GITHUB_WORKSPACE/assets_release/VOID_Launcher.exe" 2>/dev/null || true
           cp "VOID CLIENT Setup $V.exe" "$GITHUB_WORKSPACE/assets_release/VOID_Client_Setup_$V.exe" 2>/dev/null || true
           cp "void-client-$V.tar.gz" "$GITHUB_WORKSPACE/assets_release/void-client-$V.tar.gz" 2>/dev/null || true
+          cp VOID_Client_$V-*.dmg "$GITHUB_WORKSPACE/assets_release/" 2>/dev/null || true
+          cp VOID_Client_$V-*.zip "$GITHUB_WORKSPACE/assets_release/" 2>/dev/null || true
           ls -la "$GITHUB_WORKSPACE/assets_release"
 
       - name: Publish release assets
