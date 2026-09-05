@@ -5,23 +5,23 @@
     "downloads": {
         "win_installer": {
             "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.1/VOID_Client_Setup_1.0.1.exe",
-            "sha256": ""
+            "sha256": "fefb693418b90eb815ecc3a4b6e0db2531f7ef4516e289e330e7d95a34b3b8a1"
         },
         "win_portable": {
             "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.1/VOID_Launcher.exe",
-            "sha256": ""
+            "sha256": "f78c7f5fe6aa8b033fca150b27232e1277cbbcd008a33ae8c22882bb0fb8344b"
         },
         "linux": {
             "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.1/void-client-1.0.1.tar.gz",
-            "sha256": ""
+            "sha256": "597f50c400ed686f085e569bb73d206f39473675b2cd7e14119447a1b485ee05"
         },
         "mac_x64": {
             "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.1/VOID_Client_1.0.1-x64.dmg",
-            "sha256": ""
+            "sha256": "f2f89ee90a4a8d045afd47464fd716bc013dbfd1fff44f1d2777f1c8fd7b72eb"
         },
         "mac_arm64": {
             "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.1/VOID_Client_1.0.1-arm64.dmg",
-            "sha256": ""
+            "sha256": "d7618ab926daf8d89b4cd70b8c3049a36115de9b988f502fcba4cb4cb5108af2"
         }
     },
     "notices": [
