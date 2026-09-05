@@ -2,7 +2,7 @@
 
 Minimalistic Minecraft launcher with a Y2K look, built on Electron. Vanilla + Fabric, Forge, NeoForge and Quilt for Minecraft 1.21.4+.
 
-- Website: https://markipler609.github.io/VoidClient/
+- Website: https://markipler609.github.io/VoidClient/ (sources in `docs/`, served from GitHub Pages)
 - Downloads: [Releases](https://github.com/Markipler609/VoidClient/releases)
 - Launcher source & build docs: [`mc-launcher/`](mc-launcher/)
 - Website source: [`docs/`](docs/)
