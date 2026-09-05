@@ -1,5 +1,9 @@
 # VOID CLIENT
 
+![Release](https://img.shields.io/github/v/release/Markipler609/VoidClient)
+![Downloads](https://img.shields.io/github/downloads/Markipler609/VoidClient/total)
+![License](https://img.shields.io/github/license/Markipler609/VoidClient)
+
 Minimalistic Minecraft launcher with a Y2K look, built on Electron. Vanilla + Fabric, Forge, NeoForge and Quilt for Minecraft.
 
 - Website: https://markipler609.github.io/VoidClient/ (sources in `docs/`, served from GitHub Pages)
