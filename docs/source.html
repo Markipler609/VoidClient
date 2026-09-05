@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOID CLIENT — Build from source</title>
+    <meta name="description" content="VOID CLIENT source. Clone the repo, install the requirements and build the launcher for Windows or Linux. Release 1.0.0 binaries included.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23050505'/%3E%3Cpath d='M16 6 L26 16 L16 26 L6 16 Z' fill='white'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="style.css?v=20260905">
+    <style>
+        .hero-title-plain { font-family: var(--font-display, inherit); font-size: clamp(42px, 8vw, 84px); line-height: 0.98; letter-spacing: -0.02em; margin: 12px 0 20px; }
+        .b-steps { list-style: none; counter-reset: step; display: grid; gap: 14px; margin-top: 26px; }
+        .b-steps li { counter-increment: step; position: relative; padding: 18px 20px 18px 64px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; }
+        .b-steps li::before { content: counter(step, decimal-leading-zero); position: absolute; left: 20px; top: 18px; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: rgba(255,255,255,0.4); }
+        .b-steps b { display: block; margin-bottom: 3px; font-size: 14px; }
+        .b-steps p { color: var(--text-dim); font-size: 13px; line-height: 1.6; }
+        .code-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 15px 18px; margin-top: 10px; overflow-x: auto; }
+        .code-card pre { font-family: Consolas, 'Cascadia Mono', Menlo, monospace; font-size: 13px; color: rgba(255,255,255,0.84); line-height: 1.75; white-space: pre; }
+        .req-list { list-style: none; display: grid; gap: 8px; margin-top: 12px; }
+        .req-list li { font-size: 13px; color: var(--text-dim); line-height: 1.55; padding-left: 20px; position: relative; }
+        .req-list li::before { content: '\25C6'; position: absolute; left: 0; top: 0; font-size: 8px; color: var(--text-dim); }
+        .req-list b { color: var(--text); font-weight: 600; }
+        .os-note { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 10px; line-height: 1.5; }
+        .rel-tag { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-dim); border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 6px 14px; margin-top: 18px; }
+        .rel-tag b { color: var(--text); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <canvas id="dither-bg"></canvas>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="orb orb-c"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
+    <div class="scroll-progress" id="scroll-progress"></div>
+
+    <!-- ═══════════════ NAV ═══════════════ -->
+    <header class="site-nav" id="site-nav">
+        <div class="nav-inner">
+            <a class="brand" href="index.html" data-smooth>
+                <span class="brand-mark">&#9670;</span>
+                <span class="brand-name">VOID&nbsp;CLIENT</span>
+            </a>
+            <nav class="nav-links">
+                <a href="#requirements" data-smooth>Requirements</a>
+                <a href="#build" data-smooth>Build</a>
+                <a href="#releases" data-smooth>Releases</a>
+                <a href="#github" data-smooth>GitHub</a>
+            </nav>
+            <a class="btn btn-primary btn-sm magnetic" href="index.html#download" data-smooth>
+                <span>&#9655; Download</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- ═══════════════ HERO ═══════════════ -->
+    <section class="hero" id="top">
+        <div class="hero-inner">
+            <p class="hero-label reveal">&#9670; SOURCE — RELEASE 1.0.0</p>
+            <h1 class="hero-title-plain reveal d1">Build from <em>source</em>.</h1>
+            <p class="hero-sub reveal d2">Snag the code, install a few things, hit play. Windows and Linux from the same tree — no hidden installers, no accounts outside Microsoft.</p>
+            <div class="hero-cta reveal d3">
+                <a class="btn btn-primary btn-lg magnetic" href="#build" data-smooth>
+                    <span class="btn-shine"></span>
+                    <span>&#9655; Start building</span>
+                </a>
+                <a class="btn btn-ghost btn-lg magnetic" href="index.html#download" data-smooth>
+                    <span>Just download binaries</span>
+                    <span class="ghost-arrow">&#8595;</span>
+                </a>
+            </div>
+            <div class="rel-tag reveal d4">Latest stable <b>1.0.0</b> &#183; MIT-licensed &#183; Electron 28</div>
+        </div>
+    </section>
+
+    <!-- ═══════════════ TICKER ═══════════════ -->
+    <div class="ticker reveal" id="ticker">
+        <div class="ticker-track">
+            <div class="ticker-group">
+                <span>Node 20 LTS</span><span>npm</span><span>Git</span><span>Electron 28</span><span>Java 21+</span><span>Discord RPC</span><span>Windows + Linux</span><span>Release 1.0.0</span>
+            </div>
+            <div class="ticker-group" aria-hidden="true">
+                <span>Node 20 LTS</span><span>npm</span><span>Git</span><span>Electron 28</span><span>Java 21+</span><span>Discord RPC</span><span>Windows + Linux</span><span>Release 1.0.0</span>
+            </div>
+        </div>
+    </div>
+
+    <main>
+
+        <!-- ═══════════════ REQUIREMENTS ═══════════════ -->
+        <section class="section" id="requirements">
+            <div class="section-head reveal">
+                <p class="kicker">01 — What you need</p>
+                <h2>Minimal kit, per <em>platform</em>.</h2>
+            </div>
+            <div class="feature-grid">
+                <article class="feature-card tilt reveal" style="--td:.0s">
+                    <div class="fc-head"><span class="fc-icon">&#9681;</span><span class="fc-index">Windows</span></div>
+                    <h3>Windows 10 / 11 &#183; x64</h3>
+                    <p>About the shortest path to a launcher:</p>
+                    <ul class="req-list">
+                        <li><b>Node.js 20 LTS</b> — <span>nodejs.org</span></li>
+                        <li><b>npm</b> — <span>ships with Node</span></li>
+                        <li><b>Git</b> — <span>git-scm.com</span></li>
+                        <li><b>Java 21+</b> — <span>adoptium.net, needed to play</span></li>
+                        <li><b>Discord desktop</b> — <span>for Rich Presence</span></li>
+                    </ul>
+                    <p class="os-note">No Visual Studio, no build tools. `npm install` is the whole setup.</p>
+                </article>
+
+                <article class="feature-card tilt reveal" style="--td:.1s">
+                    <div class="fc-head"><span class="fc-icon">&#9733;</span><span class="fc-index">Linux</span></div>
+                    <h3>Any modern distro &#183; x64</h3>
+                    <p>Same tooling as Windows, plus Electron's deps:</p>
+                    <ul class="req-list">
+                        <li><b>Node.js 20 LTS</b> + <b>npm</b></li>
+                        <li><b>Git</b></li>
+                        <li><b>Java 21+</b> — <span>to play</span></li>
+                        <li><b>Electron libs</b> — <span>libnss3, libgtk-3-0, libasound2</span></li>
+                        <li><b>Discord desktop</b> — <span>for Rich Presence</span></li>
+                    </ul>
+                    <p class="os-note">On Debian/Ubuntu: <b>sudo apt install libnss3 libgtk-3-0 libasound2</b>.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ═══════════════ BUILD ═══════════════ -->
+        <section class="section" id="build">
+            <div class="section-head reveal">
+                <p class="kicker">02 — Build it</p>
+                <h2>Clone, install, <em>run</em>.</h2>
+            </div>
+            <ol class="b-steps reveal">
+                <li>
+                    <b>Clone the repository</b>
+                    <p>Everything lives in one repo — the Electron launcher in `mc-launcher/`, this website in `website/`.</p>
+                    <div class="code-card"><pre>git clone https://github.com/Markipler609/VoidClient.git</pre></div>
+                </li>
+                <li>
+                    <b>Install dependencies</b>
+                    <p>Only production dependencies are packaged. Works on Windows and Linux unchanged.</p>
+                    <div class="code-card"><pre>cd VoidClient
+cd mc-launcher
+npm install</pre></div>
+                </li>
+                <li>
+                    <b>Run in dev mode</b>
+                    <p>Electron launches straight from source — live reload, full logs in `~/.voidclient/logs/`.</p>
+                    <div class="code-card"><pre>npm start</pre></div>
+                </li>
+                <li>
+                    <b>Build releases</b>
+                    <p>Electron Builder produces the installers. Output lands in `dist/`.</p>
+                    <div class="code-card"><pre>npm run build          &#47;&#47; current platform
+npx electron-builder --win --linux   &#47;&#47; or pick targets</pre></div>
+                </li>
+                <li>
+                    <b>Wire Discord Rich Presence</b>
+                    <p>Replace the placeholder client ID in `src/discord-rpc.js` (or set `VOID_DISCORD_APP_ID`), then upload the launcher icon as the art asset `void_logo` in the Discord Developer Portal.</p>
+                </li>
+            </ol>
+
+            <div class="code-card reveal" style="--td:.1s"><pre><span style="color:rgba(255,255,255,0.35)"># Windows</span>        dist/VOID CLIENT Setup 1.0.0.exe      <span style="color:rgba(255,255,255,0.35)">+ portable exe</span>
+<span style="color:rgba(255,255,255,0.35)"># Linux</span>          dist/void-client-1.0.0.tar.gz</pre></div>
+        </section>
+
+        <!-- ═══════════════ GITHUB ═══════════════ -->
+        <section class="section" id="github">
+            <div class="section-head reveal">
+                <p class="kicker">03 — Get the sources</p>
+                <h2>One repo, everything <em>inside</em>.</h2>
+                <p class="section-lead">The launcher, the website and the build scripts are plain files on disk — grab the archive or clone it anywhere.</p>
+            </div>
+            <div class="download-panel reveal">
+                <div class="dp-aura"></div>
+                <p class="kicker">git clone</p>
+                <h2 style="font-size:clamp(26px,4vw,40px)">github.com&#47;Markipler609&#47;VoidClient</h2>
+                <p class="dp-sub">Everything is public on GitHub — grab the archive or clone it anywhere.</p>
+                <div class="code-card"><pre>git clone https://github.com/Markipler609/VoidClient.git</pre></div>
+                <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+                    <a class="btn btn-primary btn-lg magnetic" href="https://github.com/Markipler609/VoidClient" target="_blank" rel="noopener">
+                        <span class="btn-shine"></span>
+                        <span>&#8595; Open repository</span>
+                    </a>
+                </div>
+                <p class="dp-note">No hidden build steps: `npm install` → `npm run build`. The site, the launcher and the docs commit as one unit.</p>
+            </div>
+        </section>
+
+        <!-- ═══════════════ RELEASES ═══════════════ -->
+        <section class="section download" id="releases">
+            <div class="download-panel reveal">
+                <div class="dp-aura"></div>
+                <p class="kicker">04 — Releases</p>
+                <h2>1.0.0, ready to ship.</h2>
+                <p class="dp-sub">Portable Windows build and a Linux tarball, ready to go.</p>
+                <div class="dp-btns">
+                    <a class="btn btn-primary btn-lg magnetic" href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.0/VOID_Launcher.exe" target="_blank" rel="noopener">
+                        <span class="btn-shine"></span>
+                        <span class="os-glyph">&#9681;</span>
+                        <span class="os-txt"><small>Download for</small>Windows</span>
+                    </a>
+                    <a class="btn btn-ghost btn-lg magnetic" href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.0/void-client-1.0.0.tar.gz" target="_blank" rel="noopener">
+                        <span class="os-glyph">&#9733;</span>
+                        <span class="os-txt"><small>Download for</small>Linux</span>
+                    </a>
+                    <a class="btn btn-ghost btn-lg magnetic" href="#build" data-smooth>
+                        <span class="os-glyph">&#8595;</span>
+                        <span class="os-txt"><small>Or just</small>Build it</span>
+                    </a>
+                </div>
+                <p class="dp-note">Release 1.0.0. Java 21+ is required to launch Minecraft; Discord desktop shows your Rich Presence while you&#8217;re in the launcher.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ═══════════════ FOOTER ═══════════════ -->
+    <footer class="footer">
+        <div class="foot-mark reveal" style="--td:.0s">&#9670;</div>
+        <div class="foot-name reveal" style="--td:.08s">VOID CLIENT</div>
+        <div class="foot-motto reveal" style="--td:.16s">Built for speed, designed for you.</div>
+        <div class="foot-top reveal" style="--td:.24s"><a href="index.html" data-smooth>&#8593; Back to the main page</a></div>
+        <p class="foot-note reveal" style="--td:.32s">Void Client is not affiliated with Mojang or Microsoft.</p>
+    </footer>
+
+    <script src="app.js?v=20260905"></script>
+</body>
+</html>

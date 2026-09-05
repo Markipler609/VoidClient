@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOID CLIENT</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="particles"></canvas>
+    <div id="custom-bg" class="custom-bg hidden"></div>
+    <video id="custom-video" class="custom-video hidden" loop muted playsinline></video>
+
+    <!-- Custom Titlebar -->
+    <div class="titlebar" id="titlebar">
+        <div class="titlebar-left">
+            <div class="titlebar-logo">&#9670; VOID</div>
+            <div class="titlebar-profile">
+                <img class="titlebar-avatar" id="titlebar-avatar" alt="">
+                <span class="titlebar-profile-name" id="titlebar-profile-name">Player</span>
+            </div>
+        </div>
+        <div class="titlebar-center" id="drag-area"></div>
+        <div class="titlebar-right">
+            <button class="titlebar-btn" id="btn-customize" title="Customize UI">&#9881;</button>
+            <button class="titlebar-btn" id="btn-min" title="Minimize">&#9472;</button>
+            <button class="titlebar-btn" id="btn-max" title="Maximize">&#9723;</button>
+            <button class="titlebar-btn btn-close" id="btn-close" title="Close">&#10005;</button>
+        </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="app-layout">
+        <!-- Panels -->
+        <main class="panels">
+            <!-- HOME -->
+            <div class="panel active" id="panel-home">
+                <div class="home-dash">
+                    <div class="home-left">
+                        <div class="home-hero">
+                            <div class="home-hero-content">
+                                <h1 class="hero-title">VOID CLIENT</h1>
+                                <p class="hero-sub" data-i18n="home.heroSub">The future of Minecraft launching. Built for speed, designed for you.</p>
+                                <div class="hero-play">
+                                    <div class="auth-toggle">
+                                        <button class="auth-toggle-btn active" id="auth-mode-offline" data-i18n="auth.offline">Offline</button>
+                                        <button class="auth-toggle-btn" id="auth-mode-microsoft" data-i18n="auth.microsoft">Microsoft</button>
+                                    </div>
+                                    <div id="auth-offline-box">
+                                        <input type="text" id="username-input" class="glass-input username-input" placeholder="Enter username..." value="VoidPlayer" spellcheck="false" data-i18n-placeholder="login.placeholder">
+                                    </div>
+                                    <div id="auth-ms-box" class="hidden">
+                                        <div class="ms-account" id="ms-account">
+                                            <div class="ms-account-info">
+                                                <span class="ms-account-name" id="ms-account-name" data-i18n="ms.notSignedIn">Not signed in</span>
+                                                <span class="ms-account-sub" id="ms-account-sub" data-i18n="ms.sub">Sign in to play with your Microsoft account</span>
+                                            </div>
+                                            <button class="btn-secondary hidden" id="btn-ms-login" data-i18n="ms.signIn">Sign In</button>
+                                            <button class="btn-secondary btn-danger hidden" id="btn-ms-logout" data-i18n="ms.signOut">Sign Out</button>
+                                        </div>
+                                    </div>
+                                    <button class="btn-primary btn-play" id="btn-play">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                                        <span data-i18n="play">PLAY</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="home-status" id="home-status"></div>
+                    </div>
+                    <div class="home-right">
+                        <div class="glass-card build-card">
+                            <div class="build-head">
+                                <div class="build-icon" id="build-icon">&#9670;</div>
+                                <div class="build-head-text">
+                                    <div class="build-title" id="build-title">1.21.4</div>
+                                    <div class="build-sub" id="build-sub">Vanilla</div>
+                                </div>
+                            </div>
+                            <div class="build-rows">
+                                <div class="build-row">
+                                    <span data-i18n="build.version">Version</span>
+                                    <b id="stat-version">1.21.4</b>
+                                </div>
+                                <div class="build-row">
+                                    <span data-i18n="build.loader">Loader</span>
+                                    <b id="stat-loader">Vanilla</b>
+                                </div>
+                                <div class="build-row">
+                                    <span data-i18n="settings.java">Java</span>
+                                    <b id="stat-java" data-i18n="build.checking">Checking...</b>
+                                </div>
+                                <div class="build-row">
+                                    <span data-i18n="build.ram">RAM</span>
+                                    <b id="stat-ram">4 GB</b>
+                                </div>
+                            </div>
+                            <button class="btn-secondary build-manage" id="btn-manage-version" data-i18n="build.changeVersion">Change version &#8594;</button>
+                        </div>
+                        <div class="glass-card profiles-card">
+                            <div class="profiles-head">
+                                <span class="profiles-title" data-i18n="profiles.title">Profiles</span>
+                                <button class="btn-secondary" id="btn-profile-save" data-i18n="profiles.save">Save current</button>
+                            </div>
+                            <div class="profile-chips" id="profile-chips"></div>
+                            <div class="profile-empty" id="profile-empty" data-i18n="profiles.empty">No profiles yet — save the current build</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VERSIONS -->
+            <div class="panel" id="panel-versions">
+                <div class="panel-header">
+                    <h2 data-i18n="versions.title">Minecraft Versions</h2>
+                    <div class="version-filters">
+                        <button class="filter-btn active" data-filter="release" data-i18n="filter.release">Release</button>
+                        <button class="filter-btn" data-filter="snapshot" data-i18n="filter.snapshot">Snapshot</button>
+                        <button class="filter-btn" data-filter="old_beta" data-i18n="filter.beta">Beta</button>
+                        <button class="filter-btn" data-filter="old_alpha" data-i18n="filter.alpha">Alpha</button>
+                        <button class="filter-btn" data-filter="all" data-i18n="filter.all">All</button>
+                        <button class="filter-btn" data-filter="installed" data-i18n="filter.installed">Installed</button>
+                    </div>
+                </div>
+                <div class="glass-card version-options">
+                    <div class="option-row">
+                        <label data-i18n="options.loader">Mod Loader</label>
+                        <div class="custom-select" id="loader-select">
+                            <button class="select-trigger" id="loader-trigger">Vanilla</button>
+                            <div class="select-dropdown" id="loader-dropdown">
+                                <div class="select-option active" data-value="vanilla">Vanilla</div>
+                                <div class="select-option" data-value="forge">Forge</div>
+                                <div class="select-option" data-value="fabric">Fabric</div>
+                                <div class="select-option" data-value="neoforge">NeoForge</div>
+                                <div class="select-option" data-value="quilt">Quilt</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="option-row">
+                        <label data-i18n="options.ram">RAM Allocation</label>
+                        <div class="ram-control">
+                            <button class="ram-btn" id="ram-minus">-</button>
+                            <span class="ram-value" id="ram-display">4 GB</span>
+                            <button class="ram-btn" id="ram-plus">+</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="installed-list hidden" id="installed-list"></div>
+                <div class="version-grid" id="version-grid"></div>
+            </div>
+
+            <!-- MODS -->
+            <div class="panel" id="panel-mods">
+                <div class="panel-header">
+                    <h2 data-i18n="mods.title">Modrinth Mods</h2>
+                </div>
+                <div class="mod-search-row">
+                    <select id="mod-type-select" class="glass-select" title="Project type">
+                        <option value="modpack" data-i18n="mods.type.modpack">Modpacks</option>
+                        <option value="mod" data-i18n="mods.type.mod">Mods</option>
+                        <option value="resourcepack" data-i18n="mods.type.resourcepack">Resource Packs</option>
+                        <option value="datapack" data-i18n="mods.type.datapack">Data Packs</option>
+                        <option value="shader" data-i18n="mods.type.shader">Shaders</option>
+                    </select>
+                    <input type="text" id="mod-search" class="glass-input" placeholder="Search Modrinth... (empty = browse)" spellcheck="false" data-i18n-placeholder="mods.searchPlaceholder">
+                    <button class="btn-secondary" id="btn-mod-search" data-i18n="mods.search">Search</button>
+                </div>
+                <div class="mod-filter-row">
+                    <select id="mod-loader-select" class="glass-select" title="Loader filter">
+                        <option value="any" data-i18n="mods.anyLoader">Any loader</option>
+                        <option value="forge">Forge</option>
+                        <option value="fabric">Fabric</option>
+                        <option value="neoforge">NeoForge</option>
+                        <option value="quilt">Quilt</option>
+                    </select>
+                    <select id="mod-version-select" class="glass-select" title="Version filter">
+                        <option value="any" data-i18n="mods.anyVersion">Any version</option>
+                    </select>
+                    <select id="mod-sort-select" class="glass-select" title="Sort results">
+                        <option value="relevance" selected data-i18n="sort.relevance">Relevance</option>
+                        <option value="downloads" data-i18n="sort.downloads">Downloads</option>
+                        <option value="follows" data-i18n="sort.follows">Follows</option>
+                        <option value="newest" data-i18n="sort.newest">Newest</option>
+                        <option value="updated" data-i18n="sort.updated">Updated</option>
+                    </select>
+                </div>
+                <div class="mod-results" id="mod-results">
+                    <div class="mod-empty" data-i18n="mods.browsing">Browsing Modrinth...</div>
+                </div>
+                <div class="mod-pager hidden" id="mod-pager">
+                    <button class="btn-secondary" id="btn-mod-prev" data-i18n="pager.prev">&#8249; Prev</button>
+                    <span class="mod-pager-info" id="mod-pager-info">Page 1</span>
+                    <button class="btn-secondary" id="btn-mod-next" data-i18n="pager.next">Next &#8250;</button>
+                </div>
+                <div class="mod-installed-section">
+                    <div class="panel-header" style="margin-top:24px">
+                        <h2 style="font-size:16px" data-i18n="mods.installed">Installed Mods</h2>
+                        <button class="btn-secondary" id="btn-refresh-mods" data-i18n="mods.refresh">Refresh</button>
+                    </div>
+                    <div class="installed-mods-list" id="installed-mods-list">
+                        <div class="mod-empty" data-i18n="mods.noInstalled">No mods installed</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS -->
+            <div class="panel" id="panel-settings">
+                <div class="panel-header">
+                    <h2 data-i18n="settings.title">Settings</h2>
+                    <button class="btn-secondary" id="btn-edit-settings" title="Reorder blocks" data-i18n="settings.edit">Edit</button>
+                </div>
+                <div class="settings-grid" id="settings-grid">
+                    <div class="glass-card settings-card" data-block="java">
+                        <h3 data-i18n="settings.java">Java</h3>
+                        <div class="setting-row">
+                            <label data-i18n="settings.detectedJava">Detected Java</label>
+                            <span class="setting-value" id="settings-java-info">Checking...</span>
+                        </div>
+                        <div class="setting-row">
+                            <label data-i18n="settings.javaVersion">Java Version</label>
+                            <span class="setting-value" id="settings-java-version">—</span>
+                        </div>
+                        <div class="setting-row">
+                            <label data-i18n="settings.javaExec">Java Executable</label>
+                            <div class="setting-action">
+                                <span class="setting-value" id="java-path-display" data-i18n="settings.autoDetect">Auto-detect</span>
+                                <button class="btn-secondary" id="btn-select-java" data-i18n="settings.chooseJava">Choose Java</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card settings-card" data-block="game">
+                        <h3 data-i18n="settings.game">Game</h3>
+                        <div class="setting-row">
+                            <label data-i18n="settings.gameDir">Game Directory</label>
+                            <div class="setting-action">
+                                <span class="setting-value" id="game-dir-display" data-i18n="settings.default">Default</span>
+                                <button class="btn-secondary" id="btn-select-dir" data-i18n="settings.browse">Browse</button>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <label data-i18n="settings.ram">RAM Allocation</label>
+                            <div class="setting-action">
+                                <span class="setting-value" id="settings-ram-display">4 GB</span>
+                                <div class="ram-control">
+                                    <button class="ram-btn" id="settings-ram-minus">-</button>
+                                    <button class="ram-btn" id="settings-ram-plus">+</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setting-row setting-col">
+                            <label data-i18n="settings.jvmArgs">JVM Arguments</label>
+                            <input type="text" id="txt-jvm-args" class="glass-input" placeholder="e.g. -Xms2G -XX:+UseG1GC ..." spellcheck="false" data-i18n-placeholder="settings.jvmPlaceholder">
+                        </div>
+                        <div class="setting-row">
+                            <label class="folder-label">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                                <span data-i18n="settings.openFolder">Open Game Folder</span>
+                            </label>
+                            <div class="setting-action">
+                                <button class="btn-secondary" id="btn-open-folder" data-i18n="settings.open">Open</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card settings-card" data-block="background">
+                        <h3 data-i18n="settings.background">Background</h3>
+                        <div class="setting-row">
+                            <label data-i18n="settings.imgBg">Image / GIF Background</label>
+                            <div class="setting-action">
+                                <button class="btn-secondary" id="btn-select-bg" data-i18n="settings.chooseImage">Choose Image</button>
+                                <button class="btn-secondary btn-danger" id="btn-clear-bg" data-i18n="settings.clear">Clear</button>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <label data-i18n="settings.videoBg">Video Background</label>
+                            <div class="setting-action">
+                                <button class="btn-secondary" id="btn-select-video" data-i18n="settings.chooseVideo">Choose Video</button>
+                                <button class="btn-secondary btn-danger" id="btn-clear-video" data-i18n="settings.clear">Clear</button>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <label>Particle Effect</label>
+                            <div class="lever-wrap">
+                                <button class="lever" id="lever-particles" data-active="true">
+                                    <div class="lever-track"><div class="lever-thumb"></div></div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card settings-card" data-block="sound">
+                        <h3 data-i18n="settings.sound">Sound</h3>
+                        <div class="setting-sub" data-i18n="settings.soundBg">Background sound</div>
+                        <div class="setting-row">
+                            <label data-i18n="settings.muteVideo">Mute Video</label>
+                            <div class="lever-wrap">
+                                <button class="lever" id="lever-video-sound" data-active="false">
+                                    <div class="lever-track"><div class="lever-thumb"></div></div>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <label data-i18n="settings.videoVolume">Video Volume</label>
+                            <div class="setting-action">
+                                <input type="range" id="rng-video-volume" min="0" max="100" value="100">
+                                <span class="setting-value" id="val-video-volume">100%</span>
+                            </div>
+                        </div>
+                        <div class="setting-divider"></div>
+                        <div class="setting-sub" data-i18n="settings.interfaceSub">Interface</div>
+                        <div class="setting-row">
+                            <label data-i18n="settings.uiSounds">UI Sounds</label>
+                            <div class="lever-wrap">
+                                <button class="lever" id="lever-ui-sounds" data-active="true">
+                                    <div class="lever-track"><div class="lever-thumb"></div></div>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="setting-divider"></div>
+                    </div>
+                    <div class="glass-card settings-card" data-block="interface">
+                        <h3 data-i18n="settings.interface">Interface</h3>
+                        <div class="setting-row">
+                            <label data-i18n="settings.language">Language</label>
+                            <div class="custom-select lang-select" id="lang-select">
+                                <button class="select-trigger" id="lang-trigger">English</button>
+                                <div class="select-dropdown" id="lang-dropdown"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="glass-card settings-card" data-block="logs">
+                        <h3 data-i18n="settings.logs">Logs</h3>
+                        <div class="setting-row">
+                            <label data-i18n="settings.logsLabel">Launcher Log</label>
+                            <button class="btn-secondary" id="btn-open-log" data-i18n="settings.openLog">Open Log Folder</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Bottom navigation island -->
+    <nav class="bottom-nav" id="bottom-nav">
+        <button class="nav-btn active" data-panel="home" title="Home">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l9-9 9 9"/><path d="M5 10v10a1 1 0 001 1h4v-6h4v6h4a1 1 0 001-1V10"/></svg>
+            <span data-i18n="nav.home">Home</span>
+        </button>
+        <button class="nav-btn" data-panel="versions" title="Versions">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <span data-i18n="nav.versions">Versions</span>
+        </button>
+        <button class="nav-btn" data-panel="mods" title="Mods">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="7.5 4.21 12 6.81 16.5 4.21"/><line x1="12" y1="22.08" x2="12" y2="6.81"/></svg>
+            <span data-i18n="nav.mods">Mods</span>
+        </button>
+        <button class="nav-btn" data-panel="settings" title="Settings">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            <span data-i18n="nav.settings">Settings</span>
+        </button>
+    </nav>
+
+    <!-- Microsoft Device Login Modal -->
+    <div class="modal-overlay hidden" id="ms-login-modal">
+        <div class="modal glass-card">
+            <div class="modal-header">
+                <h2 data-i18n="ms.title">Sign in with Microsoft</h2>
+                <button class="btn-secondary" id="btn-close-ms-login">&times;</button>
+            </div>
+            <div class="modal-body ms-modal-body">
+                <p class="ms-modal-hint" id="ms-modal-hint" data-i18n="ms.waiting">Waiting to start...</p>
+                <div class="ms-code-wrap hidden" id="ms-code-wrap">
+                    <div class="ms-code" id="ms-code">------</div>
+                    <p class="ms-modal-sub" data-i18n-parts="ms.subA|ms.subLink|ms.subB">Go to <a id="ms-uri" href="#" target="_blank">the device login page</a>, then enter this code to link your account.</p>
+                    <a class="btn-primary ms-open-btn" id="btn-open-ms-page" href="#" target="_blank" data-i18n="ms.open">Open login page</a>
+                </div>
+                <div class="ms-code-status hidden" id="ms-code-status" data-i18n="ms.waitAuth">Waiting for authorization...</div>
+                <div class="ms-code-progress hidden" id="ms-code-progress"><div class="progress-track"><div class="progress-fill" id="ms-progress-fill"></div></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customization Modal -->
+    <div class="modal-overlay hidden" id="customize-modal">
+        <div class="modal glass-card">
+            <div class="modal-header">
+                <h2 data-i18n="cust.title">Customize Interface</h2>
+                <button class="btn-secondary" id="btn-close-customize">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="customize-section">
+                    <h3 data-i18n="cust.colors">Colors</h3>
+                    <div class="color-row"><label data-i18n="cust.accent">Accent</label><input type="color" id="clr-accent" value="#ffffff"></div>
+                    <div class="color-row"><label data-i18n="cust.background">Background</label><input type="color" id="clr-bg" value="#050505"></div>
+                    <div class="color-row"><label data-i18n="cust.text">Text</label><input type="color" id="clr-text" value="#ffffff"></div>
+                    <div class="color-row"><label data-i18n="cust.textDim">Text Dim</label><input type="color" id="clr-text-dim" value="#666666"></div>
+                    <div class="color-row"><label data-i18n="cust.border">Glass Border</label><input type="color" id="clr-border" value="#141414"></div>
+                    <div class="color-row"><label data-i18n="cust.glassFill">Glass Fill</label><input type="color" id="clr-glass" value="#0a0a0a"></div>
+                    <div class="color-row"><label data-i18n="cust.sidebar">Sidebar</label><input type="color" id="clr-sidebar" value="#0a0a0a"></div>
+                </div>
+                <div class="customize-section">
+                    <h3 data-i18n="cust.blur">Blur & Opacity</h3>
+                    <div class="slider-row">
+                        <label data-i18n="cust.glassBlur">Glass Blur</label>
+                        <input type="range" id="rng-blur" min="0" max="40" value="20">
+                        <span class="rng-val" id="val-blur">20px</span>
+                    </div>
+                    <div class="slider-row">
+                        <label data-i18n="cust.particleOpacity">Particle Opacity</label>
+                        <input type="range" id="rng-particle-opacity" min="0" max="100" value="60">
+                        <span class="rng-val" id="val-particle-opacity">60%</span>
+                    </div>
+                    <div class="slider-row">
+                        <label data-i18n="cust.sidebarBlur">Sidebar Blur</label>
+                        <input type="range" id="rng-sidebar-blur" min="0" max="40" value="24">
+                        <span class="rng-val" id="val-sidebar-blur">24px</span>
+                    </div>
+                    <div class="slider-row">
+                        <label data-i18n="cust.modCardBlur">Mod Card Blur</label>
+                        <input type="range" id="rng-mod-card-blur" min="0" max="40" value="14">
+                        <span class="rng-val" id="val-mod-card-blur">14px</span>
+                    </div>
+                </div>
+                <div class="customize-section">
+                    <h3 data-i18n="cust.particleEffect">Particle Effect</h3>
+                    <div class="effect-grid">
+                        <button class="effect-btn active" data-effect="dither">Dither</button>
+                        <button class="effect-btn" data-effect="starfield">Starfield</button>
+                        <button class="effect-btn" data-effect="matrix">Matrix Rain</button>
+                        <button class="effect-btn" data-effect="aurora">Aurora</button>
+                        <button class="effect-btn" data-effect="galaxy">Galaxy Spiral</button>
+                    </div>
+                </div>
+                <div class="customize-section">
+                    <h3 data-i18n="cust.presets">Presets</h3>
+                    <div class="preset-grid">
+                        <button class="preset-btn" data-preset="midnight" data-i18n="cust.preset.midnight">Midnight</button>
+                        <button class="preset-btn" data-preset="neon" data-i18n="cust.preset.neon">Neon</button>
+                        <button class="preset-btn" data-preset="arctic" data-i18n="cust.preset.arctic">Arctic</button>
+                        <button class="preset-btn" data-preset="sunset" data-i18n="cust.preset.sunset">Sunset</button>
+                        <button class="preset-btn" data-preset="void" data-i18n="cust.preset.void">Void</button>
+                        <button class="preset-btn" data-preset="reset" data-i18n="cust.preset.reset">Default</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modrinth project details drawer -->
+    <div class="mod-drawer-overlay hidden" id="mod-drawer-overlay">
+        <div class="mod-drawer" id="mod-drawer">
+            <div class="mod-drawer-header">
+                <img class="mod-drawer-icon" id="mod-drawer-icon" alt="">
+                <div class="mod-drawer-titles">
+                    <h3 id="mod-drawer-title" data-i18n="mods.drawer.title">Project</h3>
+                    <span class="mod-drawer-author" id="mod-drawer-author"></span>
+                </div>
+                <button class="btn-secondary" id="btn-close-mod-drawer">&times;</button>
+            </div>
+            <div class="mod-drawer-body">
+                <div class="mod-drawer-gallery-wrap" id="mod-drawer-gallery-wrap">
+                    <button class="gal-arrow gal-prev hidden" id="gal-prev" title="Previous">&lsaquo;</button>
+                    <div class="mod-drawer-gallery" id="mod-drawer-gallery"></div>
+                    <button class="gal-arrow gal-next hidden" id="gal-next" title="Next">&rsaquo;</button>
+                </div>
+                <div class="mod-drawer-meta" id="mod-drawer-meta"></div>
+                <div class="mod-drawer-desc" id="mod-drawer-desc" data-i18n="mods.drawer.loading">Loading...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mod-lightbox hidden" id="mod-lightbox"><img id="mod-lightbox-img" alt=""></div>
+
+    <!-- Profile name prompt -->
+    <div class="modal-overlay hidden" id="profile-prompt-modal">
+        <div class="modal glass-card" style="max-width:360px">
+            <div class="modal-header">
+                <h2 data-i18n="profile.title">Save profile</h2>
+                <button class="btn-secondary" id="btn-close-profile-prompt">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="ms-modal-hint" data-i18n="profile.hint">Name this build (version, loader, RAM, Java, JVM args)</p>
+                <input type="text" id="profile-name-input" class="glass-input profile-name-input" placeholder="e.g. SMP / FPS Build / Modded" spellcheck="false" data-i18n-placeholder="profile.placeholder">
+                <div class="profile-prompt-actions">
+                    <button class="btn-secondary" id="btn-profile-cancel" data-i18n="profile.cancel">Cancel</button>
+                    <button class="btn-primary" id="btn-profile-ok" data-i18n="profile.save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar-wrap hidden" id="progress-wrap">
+        <div class="progress-text" id="progress-text">Starting...</div>
+        <div class="progress-track">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <div id="cursor-dot"></div>
+
+    <script src="i18n.js"></script>
+    <script src="renderer.js"></script>
+</body>
+</html>

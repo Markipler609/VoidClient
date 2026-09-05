@@ -1,0 +1,36 @@
+{
+  "name": "void-client",
+  "version": "1.0.0",
+  "description": "VOID CLIENT — Minecraft Launcher with Y2K aesthetics",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "@xhayper/discord-rpc": "^1.3.4",
+    "adm-zip": "^0.5.18",
+    "electron-store": "^8.1.0"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.voidclient.launcher",
+    "productName": "VOID CLIENT",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": [
+        "portable",
+        "nsis"
+      ],
+      "icon": "assets/icon.png"
+    },
+    "linux": {
+      "target": "tar.gz"
+    }
+  }
+}

@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Secrets & local config — NEVER commit your Microsoft Client ID here
+.env
+.local
+*.local.json
+
+# Logs & game data
+logs/
+*.log
+**/logs/
+hs_err_pid*
+temp-*-installer.jar.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/

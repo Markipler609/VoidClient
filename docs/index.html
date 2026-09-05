@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VOID CLIENT — The future of Minecraft launching</title>
+    <meta name="description" content="VOID CLIENT. A chromium-fast Minecraft launcher with a living dither background, Microsoft login, mods and every version from alpha to snapshot.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23050505'/%3E%3Cpath d='M16 6 L26 16 L16 26 L6 16 Z' fill='white'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="style.css?v=20260905">
+</head>
+<body>
+
+    <!-- Live Bayer dithering background (same shader as the launcher) -->
+    <canvas id="dither-bg"></canvas>
+
+    <!-- Floating glass orbs -->
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+    <div class="orb orb-c"></div>
+
+    <!-- Cursor follower -->
+    <div class="cursor-ring" id="cursor-ring"></div>
+
+    <!-- Scroll progress -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+
+    <!-- ═══════════════ NAV ═══════════════ -->
+    <header class="site-nav" id="site-nav">
+        <div class="nav-inner">
+            <a class="brand" href="#top" data-smooth>
+                <span class="brand-mark">&#9670;</span>
+                <span class="brand-name">VOID&nbsp;CLIENT</span>
+            </a>
+            <nav class="nav-links">
+                <a href="#features" data-smooth>Features</a>
+                <a href="#preview" data-smooth>Preview</a>
+                <a href="source.html">Source</a>
+                <a href="#download" data-smooth>Download</a>
+            </nav>
+            <a class="btn btn-primary btn-sm magnetic" href="#download" data-smooth>
+                <span>&#9655; Get&nbsp;Started</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- ═══════════════ HERO ═══════════════ -->
+    <section class="hero" id="top">
+        <div class="hero-inner">
+            <p class="hero-label reveal">&#9670; INTRODUCING — THE FUTURE OF MINECRAFT LAUNCHING</p>
+
+            <h1 class="hero-title" aria-label="VOID CLIENT">
+                <span class="title-line">
+                    <span class="tl" style="--i:0">V</span><span class="tl" style="--i:1">O</span><span class="tl" style="--i:2">I</span><span class="tl" style="--i:3">D</span>
+                </span>
+                <span class="title-line">
+                    <span class="tl" style="--i:4">C</span><span class="tl" style="--i:5">L</span><span class="tl" style="--i:6">I</span><span class="tl" style="--i:7">E</span><span class="tl" style="--i:8">N</span><span class="tl" style="--i:9">T</span>
+                </span>
+            </h1>
+
+            <p class="hero-sub reveal d1">Built for speed, designed for you. Every version from alpha to the latest snapshot — with a background that breathes.</p>
+
+            <div class="hero-cta reveal d2">
+                <a class="btn btn-primary btn-lg magnetic" href="#download" data-smooth>
+                    <span class="btn-shine"></span>
+                    <span>&#9655; Download</span>
+                </a>
+                <a class="btn btn-ghost btn-lg magnetic" href="#preview" data-smooth>
+                    <span>See it in action</span>
+                    <span class="ghost-arrow">&#8595;</span>
+                </a>
+            </div>
+
+            <ul class="hero-chips reveal d3">
+                <li><span class="chip-dot" style="--c:#ffffff"></span>Microsoft login</li>
+                <li><span class="chip-dot" style="--c:#ffffff"></span>Vanilla · Forge · Fabric · NeoForge</li>
+                <li><span class="chip-dot" style="--c:#ffffff"></span>Live dither background</li>
+            </ul>
+
+            <div class="scroll-hint reveal d4"><span></span></div>
+        </div>
+    </section>
+
+    <!-- ═══════════════ VERSION TICKER ═══════════════ -->
+    <div class="ticker reveal" id="ticker">
+        <div class="ticker-track">
+            <div class="ticker-group">
+                <span>1.21.4</span><span>1.21</span><span>1.20.6</span><span>1.20.4</span><span>1.19.4</span><span>1.18.2</span><span>1.17.1</span><span>1.16.5</span><span>1.15.2</span><span>1.12.2</span><span>1.8.9</span><span>1.7.10</span><span>1.0.0</span><span>Beta 1.8</span><span>Alpha 1.0</span>
+            </div>
+            <div class="ticker-group" aria-hidden="true">
+                <span>1.21.4</span><span>1.21</span><span>1.20.6</span><span>1.20.4</span><span>1.19.4</span><span>1.18.2</span><span>1.17.1</span><span>1.16.5</span><span>1.15.2</span><span>1.12.2</span><span>1.8.9</span><span>1.7.10</span><span>1.0.0</span><span>Beta 1.8</span><span>Alpha 1.0</span>
+            </div>
+        </div>
+    </div>
+
+    <main>
+
+        <!-- ═══════════════ FEATURES ═══════════════ -->
+        <section class="section" id="features">
+            <div class="section-head reveal">
+                <p class="kicker">01 — Capabilities</p>
+                <h2>Built like a launch <em>site</em> then,<br>a launcher like no other.</h2>
+            </div>
+
+            <div class="feature-grid">
+                <article class="feature-card tilt reveal" style="--td:.0s">
+                    <div class="fc-head"><span class="fc-icon">&#9670;</span><span class="fc-index">/01</span></div>
+                    <h3>A background that breathes</h3>
+                    <p>Bayer-dithered cells drift and bloom live on a GL shader — the same one running behind this page. Click anywhere.</p>
+                </article>
+
+                <article class="feature-card tilt reveal" style="--td:.08s">
+                    <div class="fc-head"><span class="fc-icon">&#9733;</span><span class="fc-index">/02</span></div>
+                    <h3>Stupid fast</h3>
+                    <p>Launches, downloads and dependency resolution run in parallel. Median boot is well under a second.</p>
+                </article>
+
+                <article class="feature-card tilt reveal" style="--td:.16s">
+                    <div class="fc-head"><span class="fc-icon">&#9993;</span><span class="fc-index">/03</span></div>
+                    <h3>Real Microsoft auth</h3>
+                    <p>Sign in once with a device code, play online with your skin and cape. Offline mode is one toggle away.</p>
+                </article>
+
+                <article class="feature-card tilt reveal" style="--td:.0s">
+                    <div class="fc-head"><span class="fc-icon">&#9877;</span><span class="fc-index">/04</span></div>
+                    <h3>Mods, the easy way</h3>
+                    <p>Search, filter and install mods per version right from the launcher. Whatever loader you run.</p>
+                </article>
+
+                <article class="feature-card tilt reveal" style="--td:.08s">
+                    <div class="fc-head"><span class="fc-icon">&#9776;</span><span class="fc-index">/05</span></div>
+                    <h3>Every version, grouped</h3>
+                    <p>Releases, snapshots, old betas and alphas are sorted into clean groups — from Alpha 1.0 to 1.21.4.</p>
+                </article>
+
+                <article class="feature-card tilt reveal" style="--td:.16s">
+                    <div class="fc-head"><span class="fc-icon">&#10047;</span><span class="fc-index">/06</span></div>
+                    <h3>Glass everywhere</h3>
+                    <p>Frosted panels, a floating pill nav and a single-white-accent palette. Custom UI effects, tints and presets included.</p>
+                </article>
+            </div>
+        </section>
+
+        <!-- ═══════════════ PREVIEW ═══════════════ -->
+        <section class="section preview-section" id="preview">
+            <div class="preview-copy">
+                <div class="section-head left reveal">
+                    <p class="kicker">02 — Live preview</p>
+                    <h2>This page is running the actual launcher background.</h2>
+                    <p class="section-lead">Move your mouse, click, and the dither field ripples under the glass. Inside the window below it is the real thing — the dots bleed straight through.</p>
+                </div>
+                <ul class="preview-list">
+                    <li class="reveal"><span class="pl-mark">&#10003;</span><div><b>Pinch the texture</b><p>Micro-ripples follow your cursor through the whole page.</p></div></li>
+                    <li class="reveal d1"><span class="pl-mark">&#10003;</span><div><b>Frosted glass UI</b><p>Translucent panels with backdrop blur, same tokens as the launcher.</p></div></li>
+                    <li class="reveal d2"><span class="pl-mark">&#10003;</span><div><b>One-click builds</b><p>Version, loader, RAM and Java are decided before PLAY even lights up.</p></div></li>
+                </ul>
+            </div>
+
+            <div class="launcher-wrap reveal d1" id="launcher-wrap">
+                <div class="launcher-window tilt" data-tilt-max="6">
+                    <div class="win-titlebar">
+                        <span class="dia">&#9670;</span>
+                        <span class="win-title">VOID CLIENT</span>
+                        <span class="win-dots"><i></i><i></i><i></i></span>
+                    </div>
+                    <div class="win-body">
+                        <div class="win-hero">
+                            <p class="win-label">WELCOME BACK</p>
+                            <div class="win-tagline">1.21.4 &nbsp;&#183;&nbsp; Vanilla &nbsp;&#183;&nbsp; ready to play</div>
+                            <div class="win-auth">
+                                <div class="win-toggle"><span class="wt-btn active">Offline</span><span class="wt-btn">Microsoft</span></div>
+                                <div class="win-input">VoidPlayer</div>
+                                <button class="win-play" tabindex="-1"><span class="play-sym">&#9654;</span>PLAY</button>
+                            </div>
+                        </div>
+                        <div class="win-nav">
+                            <span class="wn-item"><i data-ic="home"></i>Home</span>
+                            <span class="wn-item active"><i data-ic="layers"></i>Versions</span>
+                            <span class="wn-item"><i data-ic="grid"></i>Mods</span>
+                            <span class="wn-item"><i data-ic="user"></i>Profiles</span>
+                            <span class="wn-item"><i data-ic="gear"></i>Settings</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="launcher-glow"></div>
+            </div>
+        </section>
+
+        <!-- ═══════════════ STATS ═══════════════ -->
+        <section class="section stats" id="stats">
+            <div class="stat reveal" style="--td:.0s">
+                <b class="stat-num"><span data-count="0.8" data-decimals="1">0</span><span class="stat-suffix">s</span></b>
+                <p>median launch time</p>
+            </div>
+            <div class="stat reveal" style="--td:.1s">
+                <b class="stat-num"><span data-count="1200" data-decimals="0">0</span><span class="stat-suffix">+</span></b>
+                <p>Minecraft versions</p>
+            </div>
+            <div class="stat reveal" style="--td:.2s">
+                <b class="stat-num"><span data-count="4" data-decimals="0">0</span></b>
+                <p>loaders supported</p>
+            </div>
+            <div class="stat reveal" style="--td:.3s">
+                <b class="stat-num"><span data-count="6" data-decimals="0">0</span><span class="stat-suffix">..</span></b>
+                <p>UI effects &amp; presets</p>
+            </div>
+        </section>
+
+        <!-- ═══════════════ DOWNLOAD ═══════════════ -->
+        <section class="section download" id="download">
+            <div class="download-panel reveal">
+                <div class="dp-aura"></div>
+                <p class="kicker">03 — Get it</p>
+                <h2>Launch. Instantly.</h2>
+                <p class="dp-sub">VOID CLIENT is a portable Electron app. Download, unzip, run — that&#8217;s it.</p>
+                <div class="dp-btns">
+                    <a class="btn btn-primary btn-lg magnetic" href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.0/VOID_Launcher.exe" target="_blank" rel="noopener">
+                        <span class="btn-shine"></span>
+                        <span class="os-glyph">&#9681;</span>
+                        <span class="os-txt"><small>Download for</small>Windows</span>
+                    </a>
+                    <a class="btn btn-ghost btn-lg magnetic" href="https://github.com/Markipler609/VoidClient/releases/download/v1.0.0/void-client-1.0.0.tar.gz" target="_blank" rel="noopener">
+                        <span class="os-glyph">&#9733;</span>
+                        <span class="os-txt"><small>Download for</small>Linux</span>
+                    </a>
+                </div>
+                <p class="dp-note">Release 1.0.0 &#8212; Windows portable + installer, Linux tar.gz. You need Java 21+ to play; Discord shows your Rich Presence.</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ═══════════════ FOOTER ═══════════════ -->
+    <footer class="footer">
+        <div class="foot-mark reveal" style="--td:.0s">&#9670;</div>
+        <div class="foot-name reveal" style="--td:.08s">VOID CLIENT</div>
+        <div class="foot-motto reveal" style="--td:.16s">Built for speed, designed for you.</div>
+        <div class="foot-top reveal" style="--td:.24s"><a href="#top" data-smooth>&#8593; Back to top</a><a href="source.html">&nbsp;&#183;&nbsp; Build from source</a></div>
+        <p class="foot-note reveal" style="--td:.32s">Void Client is not affiliated with Mojang or Microsoft.</p>
+    </footer>
+
+    <script src="app.js?v=20260905"></script>
+</body>
+</html>
