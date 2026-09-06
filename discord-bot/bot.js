@@ -6,6 +6,7 @@ const PREFIX = process.env.BOT_PREFIX || '!';
 const REPO = process.env.REPO || 'Markipler609/VoidClient';
 const HEALTH_BASE = process.env.HEALTH_BASE || 'http://x95027pc.beget.tech';
 const ADMIN_ROLE_IDS = (process.env.ADMIN_ROLE_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
+const GUILD_ID = process.env.GUILD_ID || '';
 const ANNOUNCE_CHANNEL_ID = process.env.ANNOUNCE_CHANNEL_ID || null;
 
 if (!TOKEN) {
@@ -19,7 +20,6 @@ const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
         GatewayIntentBits.GuildMessages,
-        GatewayIntentBits.MessageContent,
     ],
 });
 
@@ -85,17 +85,31 @@ client.once('ready', () => {
     client.user.setPresence({ activities: [{ name: 'VOID CLIENT updates', type: ActivityType.Watching }], status: 'online' });
 });
 
+function commandFrom(msg) {
+    if (!msg.content) return null;
+    let content = msg.content;
+    const mentioned = msg.mentions && msg.mentions.has(client.user.id);
+    if (!mentioned && !content.startsWith(PREFIX)) return null;
+    if (mentioned) content = content.replace(/<@!?\d+>/g, ' ').trim();
+    if (!content) return null;
+    if (content.startsWith(PREFIX)) content = content.slice(PREFIX.length).trim();
+    const parts = content.split(/\s+/).filter(Boolean);
+    if (!parts.length) return null;
+    const cmd = parts.shift().toLowerCase();
+    return { cmd, args: parts, text: parts.join(' ').trim() };
+}
+
 client.on('messageCreate', async (msg) => {
     if (msg.author.bot || !msg.guild) return;
-    if (!msg.content.startsWith(PREFIX)) return;
-    const parts = msg.content.slice(PREFIX.length).trim().split(/\s+/);
-    const cmd = (parts.shift() || '').toLowerCase();
-    const args = parts;
-    const text = args.join(' ').trim();
+    if (GUILD_ID && msg.guild.id !== GUILD_ID) return;
+    const parsed = commandFrom(msg);
+    if (!parsed) return;
+    const { cmd, args, text } = parsed;
 
     if (cmd === 'help') {
         return msg.channel.send(
-            '**VOID CLIENT bot**\n' +
+            '**VOID CLIENT bot — commands**\n' +
+            'Use `' + PREFIX + 'cmd` or `@VOID CLIENT Updates cmd`:\n' +
             '`' + PREFIX + 'help` — this message\n' +
             '`' + PREFIX + 'latest` — latest release info\n' +
             '`' + PREFIX + 'announce <text>` — post an announcement\n' +
