@@ -1735,6 +1735,158 @@ ipcMain.handle('install-mod', async (event, { fileUrl, filename, gameDir, target
     } catch (e) { return { success: false, error: e.message }; }
 });
 
+// ═══════════════ SKINS (offline via CustomSkinLoader) ═══════════════
+const BEGET_BASE = 'http://x95027pc.beget.tech';
+const BEGET_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 VoidClient/' + app.getVersion();
+const SKIN_SERVER_ROOT = process.env.VOID_SKIN_SERVER || BEGET_BASE + '/api/get_skin.php?name=';
+const SKIN_SERVER_NAME = 'VOID';
+const SKIN_UPLOAD_URL = process.env.VOID_SKIN_UPLOAD || BEGET_BASE + '/api/upload_skin.php';
+const CSL_REPO = 'xfl03/MCCustomSkinLoader';
+
+let skinProxyPort = null;
+
+function proxyPassthrough(url, res, rewrite) {
+    const mod = url.startsWith('https') ? https : http;
+    mod.get(url, { headers: { 'User-Agent': BEGET_UA } }, (up) => {
+        const chunks = [];
+        up.on('data', (c) => chunks.push(c));
+        up.on('end', () => {
+            const body = Buffer.concat(chunks);
+            res.writeHead(up.statusCode || 502, {
+                'Content-Type': up.headers['content-type'] || 'application/octet-stream',
+                'Cache-Control': 'no-store'
+            });
+            if (rewrite) {
+                let text = body.toString('utf8');
+                try { text = rewrite(text); } catch {}
+                res.end(text);
+            } else {
+                res.end(body);
+            }
+        });
+    }).on('error', () => { res.writeHead(502); res.end('proxy error'); });
+}
+
+function fetchSkinProfile(name) {
+    return new Promise((resolve, reject) => {
+        http.get(BEGET_BASE + '/api/get_skin.php?name=' + encodeURIComponent(name), { headers: { 'User-Agent': BEGET_UA } }, (up) => {
+            const chunks = [];
+            up.on('data', (c) => chunks.push(c));
+            up.on('end', () => {
+                try { resolve(JSON.parse(Buffer.concat(chunks).toString('utf8'))); }
+                catch (e) { reject(e); }
+            });
+        }).on('error', reject);
+    });
+}
+
+function ensureSkinProxy() {
+    return new Promise((resolve, reject) => {
+        if (skinProxyPort) return resolve(skinProxyPort);
+        const srv = http.createServer((req, res) => {
+            const u = new URL(req.url, 'http://127.0.0.1');
+            const p = u.pathname;
+            const cslMatch = /^\/csl\/([A-Za-z0-9_]{1,16})\.json$/i.exec(p);
+            if (cslMatch) {
+                fetchSkinProfile(cslMatch[1]).then((j) => {
+                    const t = (j && j.textures) || {};
+                    const rel = (url) => {
+                        if (typeof url !== 'string') return null;
+                        const f = url.split(/[/\\]/).pop();
+                        return /^[A-Za-z0-9_.-]+$/.test(f) ? 'skins/' + f : null;
+                    };
+                    const textures = {};
+                    const skinFile = rel(t.SKIN && t.SKIN.url);
+                    if (skinFile) {
+                        const md = t.SKIN.metadata && t.SKIN.metadata.model;
+                        textures[md === 'slim' ? 'slim' : 'default'] = skinFile;
+                        if (rel(t.CAPE && t.CAPE.url)) textures.cape = rel(t.CAPE.url);
+                        if (rel(t.ELYTRA && t.ELYTRA.url)) textures.elytra = rel(t.ELYTRA.url);
+                        res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+                        res.end(JSON.stringify({ textures }));
+                    } else { res.writeHead(404); res.end('no skin'); }
+                }).catch(() => { res.writeHead(502); res.end('proxy error'); });
+            } else if (p.indexOf('/csl/textures/') === 0 || p.indexOf('/textures/') === 0) {
+                const file = decodeURIComponent(p.replace(/^\/csl/, '').slice('/textures/'.length));
+                if (!/^[A-Za-z0-9_.\-/]+$/.test(file)) { res.writeHead(400); res.end('bad file'); return; }
+                proxyPassthrough(BEGET_BASE + '/' + file, res, null);
+            } else if (u.pathname === '/api/get_skin.php') {
+                const name = u.searchParams.get('name') || '';
+                if (!/^[A-Za-z0-9_]{1,16}$/.test(name)) { res.writeHead(404); res.end('not found'); return; }
+                fetchSkinProfile(name).then((j) => {
+                    const skin = j && j.textures && j.textures.SKIN;
+                    if (!skin || !skin.url) { res.writeHead(404); res.end('no skin'); return; }
+                    proxyPassthrough(skin.url, res, null);
+                }).catch(() => { res.writeHead(502); res.end('proxy error'); });
+            } else if (u.pathname.indexOf('/skins/') === 0) {
+                const file = decodeURIComponent(u.pathname.slice(7));
+                if (!/^[A-Za-z0-9_.-]+$/.test(file)) { res.writeHead(400); res.end('bad file'); return; }
+                proxyPassthrough(BEGET_BASE + '/skins/' + file, res, null);
+            } else {
+                res.writeHead(404); res.end('not found');
+            }
+        });
+        srv.on('error', reject);
+        srv.listen(0, '127.0.0.1', () => {
+            skinProxyPort = srv.address().port;
+            log('Skin proxy: http://127.0.0.1:' + skinProxyPort);
+            resolve(skinProxyPort);
+        });
+    });
+}
+
+ipcMain.handle('upload-skin', async (event, { name, model, base64 }) => {
+    if (!name || !/^[A-Za-z0-9_]{2,16}$/.test(name)) return { success: false, error: 'Invalid player name' };
+    if (!base64 || base64.length > 5 * 1024 * 1024) return { success: false, error: 'Invalid or too large image' };
+    try {
+        const res = await fetch(SKIN_UPLOAD_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'User-Agent': BEGET_UA },
+            body: JSON.stringify({ name, model: model === 'slim' ? 'slim' : 'classic', skin_base64: base64 }),
+            signal: AbortSignal.timeout(45000)
+        });
+        let data = {};
+        try { data = await res.json(); } catch {}
+        if (!res.ok || !data.success) return { success: false, error: (data && data.error) || 'Upload failed (HTTP ' + res.status + ')' };
+        return { success: true, url: data.url };
+    } catch (e) { return { success: false, error: e.message }; }
+});
+
+ipcMain.handle('ensure-skinsetup', async (event, { gameDir, loader, username }) => {
+    try {
+        if (!gameDir) return { success: false, error: 'No game directory' };
+        const modsDir = path.join(gameDir, 'mods');
+        if (!fs.existsSync(modsDir)) fs.mkdirSync(modsDir, { recursive: true });
+        const port = await ensureSkinProxy();
+        const extraList = {
+            name: SKIN_SERVER_NAME,
+            type: 'CustomSkinAPI',
+            root: 'http://127.0.0.1:' + port + '/csl/'
+        };
+        // CSL reads ExtraList/*.json from its own data dir (<gameDir>/CustomSkinLoader), not config/. Write both for safety.
+        for (const base of [path.join(gameDir, 'CustomSkinLoader'), path.join(gameDir, 'config', 'CustomSkinLoader')]) {
+            const extraDir = path.join(base, 'ExtraList');
+            if (!fs.existsSync(extraDir)) fs.mkdirSync(extraDir, { recursive: true });
+            fs.rmSync(path.join(base, 'extraList.json'), { force: true });
+            fs.writeFileSync(path.join(extraDir, SKIN_SERVER_NAME + '.json'), JSON.stringify(extraList, null, 2));
+        }
+        const jar = fs.readdirSync(modsDir).find(f => /CustomSkinLoader.*\.jar$/i.test(f));
+        if (jar) return { success: true, action: 'configured', jar };
+        const isForge = /neo?forge|fml/i.test(loader || '');
+        const rel = await httpGet('https://api.github.com/repos/' + CSL_REPO + '/releases/latest');
+        const assets = (rel && rel.assets) || [];
+        const wantsForge = (a) => isForge ? /neo?forge/i.test(a.name) : /fabric|quilt/i.test(a.name);
+        const jarAsset =
+            assets.find(a => /\.jar$/i.test(a.name) && wantsForge(a)) ||
+            assets.find(a => /\.jar$/i.test(a.name) && !/sources/.test(a.name) && !(isForge ? /fabric|quilt/.test(a.name) : /neo?forge/.test(a.name))) ||
+            assets.find(a => /\.jar$/i.test(a.name));
+        if (!jarAsset) return { success: true, action: 'configured', jar: null, note: 'No CSL jar found on GitHub' };
+        log('Downloading CustomSkinLoader: ' + jarAsset.name);
+        await downloadFile(jarAsset.browser_download_url, path.join(modsDir, jarAsset.name));
+        return { success: true, action: 'installed', jar: jarAsset.name };
+    } catch (e) { return { success: false, error: e.message }; }
+});
+
 // ═══════════════ HELPERS ═══════════════
 function formatBytes(b) { return b < 1024 ? b + ' B' : b < 1048576 ? (b / 1024).toFixed(1) + ' KB' : (b / 1048576).toFixed(1) + ' MB'; }
 function getFallbackVersions() {

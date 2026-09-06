@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VOID CLIENT — Build from source</title>
-    <meta name="description" content="VOID CLIENT source. Clone the repo, install the requirements and build the launcher for Windows, Linux or macOS. Release 1.0.2 binaries included.">
+    <meta name="description" content="VOID CLIENT source. Clone the repo, install the requirements and build the launcher for Windows, Linux or macOS. Release 1.0.3 binaries included.">
     <meta name="theme-color" content="#050508">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="VOID CLIENT">
@@ -70,9 +70,9 @@
     <!-- ═══════════════ HERO ═══════════════ -->
     <section class="hero" id="top">
         <div class="hero-inner">
-            <p class="hero-label reveal">&#9670; SOURCE — RELEASE 1.0.0</p>
+            <p class="hero-label reveal">&#9670; SOURCE — RELEASE 1.0.3</p>
             <h1 class="hero-title-plain reveal d1">Build from <em>source</em>.</h1>
-            <p class="hero-sub reveal d2">Snag the code, install a few things, hit play. Windows and Linux from the same tree — no hidden installers, no accounts outside Microsoft.</p>
+            <p class="hero-sub reveal d2">Snag the code, install a few things, hit play. Windows, Linux and macOS from the same tree — no hidden installers, no accounts outside Microsoft.</p>
             <div class="hero-cta reveal d3">
                 <a class="btn btn-primary btn-lg magnetic" href="#build" data-smooth>
                     <span class="btn-shine"></span>
@@ -83,7 +83,7 @@
                     <span class="ghost-arrow">&#8595;</span>
                 </a>
             </div>
-            <div class="rel-tag reveal d4">Latest stable <b>1.0.0</b> &#183; MIT-licensed &#183; Electron 28</div>
+            <div class="rel-tag reveal d4">Latest stable <b>1.0.3</b> &#183; MIT-licensed &#183; Electron 28</div>
         </div>
     </section>
 
@@ -91,10 +91,10 @@
     <div class="ticker reveal" id="ticker">
         <div class="ticker-track">
             <div class="ticker-group">
-                <span>Node 20 LTS</span><span>npm</span><span>Git</span><span>Electron 28</span><span>Java 21+</span><span>Discord RPC</span><span>Windows + Linux</span><span>Release 1.0.0</span>
+                <span>Node 20 LTS</span><span>npm</span><span>Git</span><span>Electron 28</span><span>Java 21+</span><span>Discord RPC</span><span>Windows + Linux + macOS</span><span>Release 1.0.3</span>
             </div>
             <div class="ticker-group" aria-hidden="true">
-                <span>Node 20 LTS</span><span>npm</span><span>Git</span><span>Electron 28</span><span>Java 21+</span><span>Discord RPC</span><span>Windows + Linux</span><span>Release 1.0.0</span>
+                <span>Node 20 LTS</span><span>npm</span><span>Git</span><span>Electron 28</span><span>Java 21+</span><span>Discord RPC</span><span>Windows + Linux + macOS</span><span>Release 1.0.3</span>
             </div>
         </div>
     </div>
@@ -135,6 +135,19 @@
                     </ul>
                     <p class="os-note">On Debian/Ubuntu: <b>sudo apt install libnss3 libgtk-3-0 libasound2</b>.</p>
                 </article>
+
+                <article class="feature-card tilt reveal" style="--td:.2s">
+                    <div class="fc-head"><span class="fc-icon">&#63743;</span><span class="fc-index">macOS</span></div>
+                    <h3>macOS 12+ &#183; x64 &amp; Apple Silicon</h3>
+                    <p>Built on CI, no local signing required:</p>
+                    <ul class="req-list">
+                        <li><b>Node.js 20 LTS</b> + <b>npm</b></li>
+                        <li><b>Git</b></li>
+                        <li><b>Java 21+</b> — <span>to play (Temurin works)</span></li>
+                        <li><b>Discord desktop</b> — <span>for Rich Presence</span></li>
+                    </ul>
+                    <p class="os-note">Intel and arm64 disk images are attached to every tagged release.</p>
+                </article>
             </div>
         </section>
 
@@ -174,8 +187,9 @@ npx electron-builder --win --linux   &#47;&#47; or pick targets</pre></div>
                 </li>
             </ol>
 
-            <div class="code-card reveal" style="--td:.1s"><pre><span style="color:rgba(255,255,255,0.35)"># Windows</span>        dist/VOID CLIENT Setup 1.0.0.exe      <span style="color:rgba(255,255,255,0.35)">+ portable exe</span>
-<span style="color:rgba(255,255,255,0.35)"># Linux</span>          dist/void-client-1.0.0.tar.gz</pre></div>
+            <div class="code-card reveal" style="--td:.1s"><pre><span style="color:rgba(255,255,255,0.35)"># Windows</span>        dist/VOID CLIENT Setup 1.0.3.exe      <span style="color:rgba(255,255,255,0.35)">+ portable exe</span>
+<span style="color:rgba(255,255,255,0.35)"># Linux</span>          dist/void-client-1.0.3.tar.gz
+<span style="color:rgba(255,255,255,0.35)"># macOS</span>          dist/VOID_Client_1.0.3-{x64,arm64}.dmg</pre></div>
         </section>
 
         <!-- ═══════════════ GITHUB ═══════════════ -->
@@ -206,24 +220,20 @@ npx electron-builder --win --linux   &#47;&#47; or pick targets</pre></div>
             <div class="download-panel reveal">
                 <div class="dp-aura"></div>
                 <p class="kicker">04 — Releases</p>
-                <h2>1.0.0, ready to ship.</h2>
-                <p class="dp-sub">Portable Windows build and a Linux tarball, ready to go.</p>
+                <h2>1.0.3, ready to ship.</h2>
+                <p class="dp-sub">Windows portable + installer, a Linux tarball and macOS disk images (Intel + Apple Silicon), straight from CI.</p>
                 <div class="dp-btns">
-                    <a class="btn btn-primary btn-lg magnetic" href="download.php">
+                    <a class="btn btn-primary btn-lg magnetic" href="https://github.com/Markipler609/VoidClient/releases/latest">
                         <span class="btn-shine"></span>
                         <span class="os-glyph">&#9681;</span>
-                        <span class="os-txt"><small>Download for</small>Windows</span>
-                    </a>
-                    <a class="btn btn-ghost btn-lg magnetic" href="void-client-1.0.0.tar.gz">
-                        <span class="os-glyph">&#9733;</span>
-                        <span class="os-txt"><small>Download for</small>Linux</span>
+                        <span class="os-txt"><small>Grab from</small>GitHub Releases</span>
                     </a>
                     <a class="btn btn-ghost btn-lg magnetic" href="#build" data-smooth>
                         <span class="os-glyph">&#8595;</span>
                         <span class="os-txt"><small>Or just</small>Build it</span>
                     </a>
                 </div>
-                <p class="dp-note">Release 1.0.0. Java 21+ is required to launch Minecraft; Discord desktop shows your Rich Presence while you&#8217;re in the launcher.</p>
+                <p class="dp-note">Release 1.0.3. Java 21+ is required to launch Minecraft; Discord desktop shows your Rich Presence while you&#8217;re in the launcher.</p>
             </div>
         </section>
 

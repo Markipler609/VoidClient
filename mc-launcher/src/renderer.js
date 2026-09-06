@@ -83,6 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initLeverToggles();
     initVersionPanel();
     initModsPanel();
+    initSkinsPanel();
     initSettingsPanel();
     initLogButton();
     initCustomizeModal();
@@ -243,6 +244,100 @@ function updateProfile() {
     const avatar = document.getElementById('titlebar-avatar');
     if (name && name !== 'Player') loadHeadImage(avatar, name);
     else { avatar.removeAttribute('src'); avatar.style.display = 'none'; }
+}
+
+// ═══════════════ SKINS PANEL ═══════════════
+let skinsFileDataUrl = null;
+let skinsModel = 'classic';
+
+function applySkinsModel() {
+    const root = document.getElementById('skin-3d-player');
+    if (!root) return;
+    root.classList.toggle('slim', skinsModel === 'slim');
+}
+
+function setSkinViewerImage(dataUrl, imgH) {
+    const scene = document.getElementById('skins-preview-3d');
+    const root = document.getElementById('skin-3d-player');
+    if (!scene || !root || !dataUrl) return;
+    scene.style.setProperty('--skin', 'url("' + dataUrl + '")');
+    root.classList.toggle('legacy', imgH <= 32);
+}
+
+function initSkinsPanel() {
+    applySkinsModel();
+
+    const trigger = document.getElementById('skins-model-trigger');
+    const dropdown = document.getElementById('skins-model-dropdown');
+    if (trigger && dropdown) {
+        trigger.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('open'); });
+        document.addEventListener('click', () => dropdown.classList.remove('open'));
+        dropdown.querySelectorAll('.select-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                skinsModel = opt.dataset.value || 'classic';
+                trigger.textContent = opt.textContent;
+                dropdown.querySelectorAll('.select-option').forEach(o => o.classList.remove('active'));
+                opt.classList.add('active');
+                dropdown.classList.remove('open');
+                applySkinsModel();
+            });
+        });
+    }
+
+    const btnPick = document.getElementById('btn-pick-skin');
+    if (btnPick) btnPick.addEventListener('click', async () => {
+        const filePath = await ipcRenderer.invoke('select-image');
+        if (!filePath) return;
+        if (!/\.png$/i.test(filePath)) { showToast(VI.t('skins.needPng'), 'error'); return; }
+        const buf = fs.readFileSync(filePath);
+        skinsFileDataUrl = 'data:image/png;base64,' + buf.toString('base64');
+        document.getElementById('skins-file-name').textContent = filePath.split(/[\\/]/).pop();
+        const wrap = document.getElementById('skins-preview-wrap');
+        if (wrap) wrap.classList.remove('hidden');
+        const img = new Image();
+        img.onload = () => {
+            setSkinViewerImage(skinsFileDataUrl, img.naturalHeight);
+        };
+        img.src = skinsFileDataUrl;
+    });
+
+    const btnUp = document.getElementById('btn-upload-skin');
+    if (btnUp) btnUp.addEventListener('click', async () => {
+        const name = document.getElementById('skins-name-input').value.trim();
+        if (!name) { showToast(VI.t('skins.enterName'), 'error'); return; }
+        if (!skinsFileDataUrl) { showToast(VI.t('skins.noFile'), 'error'); return; }
+        btnUp.disabled = true;
+        const base64 = skinsFileDataUrl.replace(/^data:image\/png;base64,/, '');
+        const res = await ipcRenderer.invoke('upload-skin', { name, model: skinsModel, base64 });
+        btnUp.disabled = false;
+        const status = document.getElementById('skins-status');
+        if (status) {
+            if (res.success) {
+                status.textContent = VI.t('skins.uploaded', { name, url: res.url });
+                status.className = 'settings-status ok';
+            } else {
+                status.textContent = VI.t('skins.uploadFailed', { error: res.error || '?' });
+                status.className = 'settings-status err';
+            }
+        }
+    });
+
+    const btnCsl = document.getElementById('btn-ensure-csl');
+    if (btnCsl) btnCsl.addEventListener('click', async () => {
+        btnCsl.disabled = true;
+        const res = await ipcRenderer.invoke('ensure-skinsetup', { gameDir });
+        btnCsl.disabled = false;
+        const status = document.getElementById('skins-status');
+        if (status) {
+            if (res.success) {
+                status.textContent = res.jar ? VI.t('skins.cslReady', { jar: res.jar }) : VI.t('skins.cslConfigured');
+                status.className = 'settings-status ok';
+            } else {
+                status.textContent = VI.t('skins.cslFailed', { error: res.error || '?' });
+                status.className = 'settings-status err';
+            }
+        }
+    });
 }
 
 // ═══════════════ VERSION PANEL ═══════════════
@@ -994,8 +1089,7 @@ function setAuthMode(mode) {
     authMode = mode;
     document.getElementById('auth-mode-offline').classList.toggle('active', mode === 'offline');
     document.getElementById('auth-mode-microsoft').classList.toggle('active', mode === 'microsoft');
-    document.getElementById('auth-offline-box').classList.toggle('hidden', mode !== 'offline');
-    document.getElementById('auth-ms-box').classList.toggle('hidden', mode !== 'microsoft');
+    document.getElementById('auth-flip').classList.toggle('flipped', mode === 'microsoft');
     saveSettings();
 }
 
@@ -1145,6 +1239,10 @@ async function playGame(inst = null) {
         launchVersion = inst.id;
     }
 
+    if (/fabric-loader-|quilt-loader-|forge-|neoforge-|^fml/.test(launchVersion)) {
+        try { await ipcRenderer.invoke('ensure-skinsetup', { gameDir, loader: launchVersion, username }); } catch {}
+    }
+
     hideProgress();
     btn.innerHTML = VI.t('play.launching');
     showToast(VI.t('launch.launching', { version: launchVersion }), 'success');
@@ -1266,10 +1364,29 @@ function applyProfile(p) {
 }
 
 function deleteProfile(p) {
-    if (!confirm(VI.t('profile.deleteQ', { name: p.name }))) return;
-    profiles = profiles.filter(x => x.id !== p.id);
-    saveSettings();
-    renderProfiles();
+    const modal = document.getElementById('delete-profile-modal');
+    document.getElementById('delete-profile-msg').textContent = VI.t('profile.deleteQ', { name: p.name });
+    modal.classList.remove('hidden');
+    const confirmBtn = document.getElementById('btn-delete-confirm');
+    const cancelBtn = document.getElementById('btn-delete-cancel');
+    const closeBtn = document.getElementById('btn-close-delete-profile');
+    const cleanup = () => {
+        modal.classList.add('hidden');
+        confirmBtn.onclick = null;
+        cancelBtn.onclick = null;
+        closeBtn.onclick = null;
+        modal.removeEventListener('click', onOverlay);
+    };
+    const onOverlay = (e) => { if (e.target === modal) cleanup(); };
+    confirmBtn.onclick = () => {
+        cleanup();
+        profiles = profiles.filter(x => x.id !== p.id);
+        saveSettings();
+        renderProfiles();
+    };
+    cancelBtn.onclick = cleanup;
+    closeBtn.onclick = cleanup;
+    modal.addEventListener('click', onOverlay);
 }
 
 function openProfilePrompt() {

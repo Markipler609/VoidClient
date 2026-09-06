@@ -4,8 +4,15 @@
   <id>https://markipler609.github.io/VoidClient/</id>
   <link href="https://markipler609.github.io/VoidClient/" />
   <link rel="self" href="https://markipler609.github.io/VoidClient/feed.xml" />
-  <updated>2026-09-06T00:00:00Z</updated>
+  <updated>2026-09-07T00:00:00Z</updated>
   <author><name>Markipler609</name></author>
+  <entry>
+    <title>v1.0.3 — launcher-styled delete, skin fixes</title>
+    <id>https://github.com/Markipler609/VoidClient/releases/tag/v1.0.3</id>
+    <link href="https://github.com/Markipler609/VoidClient/releases/tag/v1.0.3" />
+    <updated>2026-09-07T00:00:00Z</updated>
+    <summary>Profile deletion now uses a launcher-styled modal in all 14 languages, plus custom-skin/avatar pipeline fixes and glass-tint polish.</summary>
+  </entry>
   <entry>
     <title>v1.0.2 — Discord community server</title>
     <id>https://github.com/Markipler609/VoidClient/releases/tag/v1.0.2</id>

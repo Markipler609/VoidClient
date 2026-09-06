@@ -2,6 +2,18 @@
 
 All notable changes to VOID CLIENT.
 
+## [1.0.3] — 2026-09-07
+
+### Changed
+
+- Profile deletion now uses a launcher-styled modal (danger accent, warning icon, "cannot be undone" hint) instead of the OS confirm dialog. Localized across all 14 languages.
+- Skin preview / custom-skin pipeline fixes (custom textures resolve correctly for both `/csl/` and `/textures/` roots).
+- Glass-tint and filter readability polish on the versions and filters panel.
+
+### Added
+
+- `profile.deleteTitle`, `profile.delete` and `profile.deleteHint` strings to every locale.
+
 ## [1.0.1] — 2026-09-06
 
 ### Added

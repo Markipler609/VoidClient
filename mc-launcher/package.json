@@ -1,6 +1,6 @@
 {
   "name": "void-client",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "VOID CLIENT — Minecraft Launcher with Y2K aesthetics",
   "main": "main.js",
   "scripts": {

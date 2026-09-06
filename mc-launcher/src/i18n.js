@@ -1,4 +1,4 @@
-// ═══════════════ I18N ═══════════════
+﻿// ═══════════════ I18N ═══════════════
 (function () {
   var LOCALES = [
     { code: 'en', native: 'English', flag: '\uD83C\uDDFA\uD83C\uDDF8' },
@@ -18,7 +18,16 @@
   ];
 
   var en = {
-    'nav.home': 'Home', 'nav.versions': 'Versions', 'nav.mods': 'Mods', 'nav.settings': 'Settings',
+    'nav.home': 'Home', 'nav.versions': 'Versions', 'nav.mods': 'Mods', 'nav.settings': 'Settings', 'nav.skins': 'Skins',
+    'skins.title': 'Skins', 'skins.nick': 'Player name', 'skins.model': 'Model', 'skins.file': 'Skin file (PNG)',
+    'skins.choose': 'Choose PNG', 'skins.noFile': 'No file selected', 'skins.needPng': 'Only .png files are supported',
+    'skins.enterName': 'Enter a player name', 'skins.upload': 'Upload skin',
+    'skins.uploaded': 'Skin uploaded for {name} -> {url}', 'skins.uploadFailed': 'Upload failed: {error}',
+    'skins.hint': 'Offline skins work on Fabric / Forge / Quilt via CustomSkinLoader (Vanilla cannot load mods).',
+    'skins.notice': 'Skins currently do not work for Vanilla or other loaders \u2014 support is on the way.',
+    'skins.setup': 'Install / set up CustomSkinLoader',
+    'skins.cslReady': 'CustomSkinLoader ready: {jar}', 'skins.cslConfigured': 'CustomSkinLoader configured (jar not found on GitHub).',
+    'skins.cslFailed': 'CustomSkinLoader setup failed: {error}',
     'auth.offline': 'Offline', 'auth.microsoft': 'Microsoft',
     'login.placeholder': 'Enter username...',
     'home.heroSub': 'The future of Minecraft launching. Built for speed, designed for you.',
@@ -27,7 +36,7 @@
     'build.changeVersion': 'Change version \u2192',
     'profiles.title': 'Profiles', 'profiles.save': 'Save current', 'profiles.empty': 'No profiles yet \u2014 save the current build',
     'profile.title': 'Save profile', 'profile.hint': 'Name this build (version, loader, RAM, Java, JVM args)', 'profile.placeholder': 'e.g. SMP / FPS Build / Modded', 'profile.cancel': 'Cancel', 'profile.save': 'Save',
-    'profile.saved': 'Profile "{name}" saved', 'profile.loaded': 'Profile "{name}" loaded', 'profile.deleteQ': 'Delete profile "{name}"?', 'profile.nameReq': 'Enter a profile name',
+    'profile.saved': 'Profile "{name}" saved', 'profile.loaded': 'Profile "{name}" loaded', 'profile.deleteQ': 'Delete profile "{name}"?', 'profile.deleteTitle': 'Delete profile', 'profile.delete': 'Delete', 'profile.deleteHint': 'This action cannot be undone', 'profile.nameReq': 'Enter a profile name',
     'versions.title': 'Minecraft Versions', 'filter.release': 'Release', 'filter.snapshot': 'Snapshot', 'filter.all': 'All', 'filter.installed': 'Installed', 'filter.beta': 'Beta', 'filter.alpha': 'Alpha',
     'versions.loading': 'Loading versions...', 'versions.none': 'No {loader} versions for this {filter} filter \u2014 switch loader or filter',
     'options.loader': 'Mod Loader', 'options.ram': 'RAM Allocation', 'verbadge.release': 'Release',
@@ -65,7 +74,16 @@
   };
 
   var ru = {
-    'nav.home': 'Главная', 'nav.versions': 'Версии', 'nav.mods': 'Моды', 'nav.settings': 'Настройки',
+    'nav.home': 'Главная', 'nav.versions': 'Версии', 'nav.mods': 'Моды', 'nav.settings': 'Настройки', 'nav.skins': 'Скины',
+    'skins.title': 'Скины', 'skins.nick': 'Имя игрока', 'skins.model': 'Модель', 'skins.file': 'Файл скина (PNG)',
+    'skins.choose': 'Выбрать PNG', 'skins.noFile': 'Файл не выбран', 'skins.needPng': 'Поддерживаются только .png',
+    'skins.enterName': 'Введите имя игрока', 'skins.upload': 'Загрузить скин',
+    'skins.uploaded': 'Скин загружен для {name} -> {url}', 'skins.uploadFailed': 'Ошибка загрузки: {error}',
+    'skins.hint': 'Оффлайн-скины работают на Fabric / Forge / Quilt через CustomSkinLoader (в Vanilla моды не загружаются).',
+    'skins.notice': 'Сейчас скины не работают ни для Vanilla, ни для других загрузчиков \u2014 поддержку уже готовим.',
+    'skins.setup': 'Установить / настроить CustomSkinLoader',
+    'skins.cslReady': 'CustomSkinLoader готов: {jar}', 'skins.cslConfigured': 'CustomSkinLoader настроен (jar не найден на GitHub).',
+    'skins.cslFailed': 'Не удалось настроить CustomSkinLoader: {error}',
     'auth.offline': 'Офлайн', 'auth.microsoft': 'Microsoft',
     'login.placeholder': 'Введите ник...',
     'home.heroSub': 'Будущее запуска Minecraft. Быстро. Для тебя.',
@@ -74,7 +92,7 @@
     'build.changeVersion': 'Сменить версию \u2192',
     'profiles.title': 'Профили', 'profiles.save': 'Сохранить сборку', 'profiles.empty': 'Профилей пока нет \u2014 сохраните текущую сборку',
     'profile.title': 'Сохранить профиль', 'profile.hint': 'Назовите сборку (версия, загрузчик, RAM, Java, JVM)', 'profile.placeholder': 'напр. SMP / FPS / Модпак', 'profile.cancel': 'Отмена', 'profile.save': 'Сохранить',
-    'profile.saved': 'Профиль \u00ab{name}\u00bb сохранён', 'profile.loaded': 'Профиль \u00ab{name}\u00bb применён', 'profile.deleteQ': 'Удалить профиль \u00ab{name}\u00bb?', 'profile.nameReq': 'Введите имя профиля',
+    'profile.saved': 'Профиль \u00ab{name}\u00bb сохранён', 'profile.loaded': 'Профиль \u00ab{name}\u00bb применён', 'profile.deleteQ': 'Удалить профиль \u00ab{name}\u00bb?', 'profile.deleteTitle': 'Удаление профиля', 'profile.delete': 'Удалить', 'profile.deleteHint': 'Это действие необратимо', 'profile.nameReq': 'Введите имя профиля',
     'versions.title': 'Версии Minecraft', 'filter.release': 'Релизы', 'filter.snapshot': 'Снапшоты', 'filter.all': 'Все', 'filter.installed': 'Установленные', 'filter.beta': 'Бета', 'filter.alpha': 'Альфа',
     'versions.loading': 'Загрузка версий...', 'versions.none': 'Нет версий {loader} для фильтра \u00ab{filter}\u00bb \u2014 смените загрузчик или фильтр',
     'options.loader': 'Мод-загрузчик', 'options.ram': 'Выделение памяти', 'verbadge.release': 'Релиз',
@@ -113,6 +131,7 @@
 
   var uk = {
     'nav.home': 'Головна', 'nav.versions': 'Версії', 'nav.mods': 'Моди', 'nav.settings': 'Налаштування',
+    'skins.notice': 'Скіни зараз не працюють ні для Vanilla, ні для інших завантажувачів \u2014 підтримку готуємо.',
     'auth.offline': 'Офлайн', 'auth.microsoft': 'Microsoft',
     'login.placeholder': 'Введіть нік...',
     'home.heroSub': 'Майбутнє запуску Minecraft. Швидко. Для тебе.',
@@ -121,7 +140,7 @@
     'build.changeVersion': 'Змінити версію \u2192',
     'profiles.title': 'Профілі', 'profiles.save': 'Зберегти збірку', 'profiles.empty': 'Профілів поки немає \u2014 збережіть поточну збірку',
     'profile.title': 'Зберегти профіль', 'profile.hint': 'Назвіть збірку (версія, завантажувач, RAM, Java, JVM)', 'profile.placeholder': 'напр. SMP / FPS / Модпак', 'profile.cancel': 'Скасувати', 'profile.save': 'Зберегти',
-    'profile.saved': 'Профіль \u00ab{name}\u00bb збережено', 'profile.loaded': 'Профіль \u00ab{name}\u00bb застосовано', 'profile.deleteQ': 'Видалити профіль \u00ab{name}\u00bb?', 'profile.nameReq': 'Введіть ім\'я профілю',
+    'profile.saved': 'Профіль \u00ab{name}\u00bb збережено', 'profile.loaded': 'Профіль \u00ab{name}\u00bb застосовано', 'profile.deleteQ': 'Видалити профіль \u00ab{name}\u00bb?', 'profile.deleteTitle': 'Видалення профілю', 'profile.delete': 'Видалити', 'profile.deleteHint': 'Цю дію неможливо скасувати', 'profile.nameReq': 'Введіть ім\'я профілю',
     'versions.title': 'Версії Minecraft', 'filter.release': 'Релізи', 'filter.snapshot': 'Снапшоти', 'filter.all': 'Всі', 'filter.installed': 'Встановлені', 'filter.beta': 'Бета', 'filter.alpha': 'Альфа',
     'versions.loading': 'Завантаження версій...', 'versions.none': 'Немає версій {loader} для фільтра \u00ab{filter}\u00bb \u2014 змініть завантажувач або фільтр',
     'options.loader': 'Мод-завантажувач', 'options.ram': 'Виділення пам\'яті', 'verbadge.release': 'Реліз',
@@ -160,6 +179,7 @@
 
   var es = {
     'nav.home': 'Inicio', 'nav.versions': 'Versiones', 'nav.mods': 'Mods', 'nav.settings': 'Ajustes',
+    'skins.notice': 'Los skins actualmente no funcionan para Vanilla ni otros loaders \u2014 el soporte ya viene en camino.',
     'auth.offline': 'Sin conexión', 'auth.microsoft': 'Microsoft',
     'login.placeholder': 'Introduce tu nombre...',
     'home.heroSub': 'El futuro del lanzamiento de Minecraft. Rápido, hecho para ti.',
@@ -168,7 +188,7 @@
     'build.changeVersion': 'Cambiar versión \u2192',
     'profiles.title': 'Perfiles', 'profiles.save': 'Guardar actual', 'profiles.empty': 'Aún no hay perfiles \u2014 guarda la compilación actual',
     'profile.title': 'Guardar perfil', 'profile.hint': 'Nombra esta compilación (versión, loader, RAM, Java, JVM)', 'profile.placeholder': 'p. ej. SMP / FPS / Modpack', 'profile.cancel': 'Cancelar', 'profile.save': 'Guardar',
-    'profile.saved': 'Perfil "{name}" guardado', 'profile.loaded': 'Perfil "{name}" aplicado', 'profile.deleteQ': '¿Eliminar el perfil "{name}"?', 'profile.nameReq': 'Introduce un nombre de perfil',
+    'profile.saved': 'Perfil "{name}" guardado', 'profile.loaded': 'Perfil "{name}" aplicado', 'profile.deleteQ': '¿Eliminar el perfil "{name}"?', 'profile.deleteTitle': 'Eliminar perfil', 'profile.delete': 'Eliminar', 'profile.deleteHint': 'Esta acción no se puede deshacer', 'profile.nameReq': 'Introduce un nombre de perfil',
     'versions.title': 'Versiones de Minecraft', 'filter.release': 'Finales', 'filter.snapshot': 'Instantáneas', 'filter.all': 'Todas', 'filter.installed': 'Instaladas', 'filter.beta': 'Beta', 'filter.alpha': 'Alfa',
     'versions.loading': 'Cargando versiones...', 'versions.none': 'No hay versiones {loader} para el filtro "{filter}" \u2014 cambia de loader o filtro',
     'options.loader': 'Mod loader', 'options.ram': 'Asignación de RAM', 'verbadge.release': 'Final',
@@ -207,6 +227,7 @@
 
   var fr = {
     'nav.home': 'Accueil', 'nav.versions': 'Versions', 'nav.mods': 'Mods', 'nav.settings': 'Paramètres',
+    'skins.notice': 'Les skins ne fonctionnent actuellement ni pour Vanilla ni pour les autres loaders \u2014 le support arrive bientôt.',
     'auth.offline': 'Hors ligne', 'auth.microsoft': 'Microsoft',
     'login.placeholder': 'Entrez votre pseudo...',
     'home.heroSub': 'L\'avenir du lancement de Minecraft. Rapide, fait pour vous.',
@@ -215,7 +236,7 @@
     'build.changeVersion': 'Changer de version \u2192',
     'profiles.title': 'Profils', 'profiles.save': 'Enregistrer la config', 'profiles.empty': 'Aucun profil pour l\'instant \u2014 enregistrez la config actuelle',
     'profile.title': 'Enregistrer le profil', 'profile.hint': 'Nommez cette config (version, loader, RAM, Java, JVM)', 'profile.placeholder': 'ex. SMP / FPS / Modpack', 'profile.cancel': 'Annuler', 'profile.save': 'Enregistrer',
-    'profile.saved': 'Profil "{name}" enregistré', 'profile.loaded': 'Profil "{name}" appliqué', 'profile.deleteQ': 'Supprimer le profil "{name}" ?', 'profile.nameReq': 'Entrez un nom de profil',
+    'profile.saved': 'Profil "{name}" enregistré', 'profile.loaded': 'Profil "{name}" appliqué', 'profile.deleteQ': 'Supprimer le profil "{name}" ?', 'profile.deleteTitle': 'Supprimer le profil', 'profile.delete': 'Supprimer', 'profile.deleteHint': 'Cette action est irréversible', 'profile.nameReq': 'Entrez un nom de profil',
     'versions.title': 'Versions de Minecraft', 'filter.release': 'Officielles', 'filter.snapshot': 'Snapshots', 'filter.all': 'Toutes', 'filter.installed': 'Installées', 'filter.beta': 'Bêta', 'filter.alpha': 'Alpha',
     'versions.loading': 'Chargement des versions...', 'versions.none': 'Aucune version {loader} pour le filtre "{filter}" \u2014 changez de loader ou de filtre',
     'options.loader': 'Mod loader', 'options.ram': 'Allocation de RAM', 'verbadge.release': 'Officielle',
@@ -254,6 +275,7 @@
 
   var de = {
     'nav.home': 'Startseite', 'nav.versions': 'Versionen', 'nav.mods': 'Mods', 'nav.settings': 'Einstellungen',
+    'skins.notice': 'Skins funktionieren derzeit weder für Vanilla noch für andere Loader \u2014 Support ist unterwegs.',
     'auth.offline': 'Offline', 'auth.microsoft': 'Microsoft',
     'login.placeholder': 'Benutzername...',
     'home.heroSub': 'Die Zukunft des Minecraft-Launchers. Schnell, für dich gemacht.',
@@ -262,7 +284,7 @@
     'build.changeVersion': 'Version ändern \u2192',
     'profiles.title': 'Profile', 'profiles.save': 'Aktuell speichern', 'profiles.empty': 'Noch keine Profile \u2014 speichere die aktuelle Build',
     'profile.title': 'Profil speichern', 'profile.hint': 'Benenne diese Build (Version, Loader, RAM, Java, JVM-Args)', 'profile.placeholder': 'z.B. SMP / FPS / Modpack', 'profile.cancel': 'Abbrechen', 'profile.save': 'Speichern',
-    'profile.saved': 'Profil \u201e{name}\u201c gespeichert', 'profile.loaded': 'Profil \u201e{name}\u201c angewendet', 'profile.deleteQ': 'Profil \u201e{name}\u201c löschen?', 'profile.nameReq': 'Profilnamen eingeben',
+    'profile.saved': 'Profil \u201e{name}\u201c gespeichert', 'profile.loaded': 'Profil \u201e{name}\u201c angewendet', 'profile.deleteQ': 'Profil \u201e{name}\u201c löschen?', 'profile.deleteTitle': 'Profil löschen', 'profile.delete': 'Löschen', 'profile.deleteHint': 'Diese Aktion kann nicht rückgängig gemacht werden', 'profile.nameReq': 'Profilnamen eingeben',
     'versions.title': 'Minecraft-Versionen', 'filter.release': 'Release', 'filter.snapshot': 'Snapshot', 'filter.all': 'Alle', 'filter.installed': 'Installiert', 'filter.beta': 'Beta', 'filter.alpha': 'Alpha',
     'versions.loading': 'Versionen werden geladen...', 'versions.none': 'Keine {loader}-Versionen für Filter \u201e{filter}\u201c \u2014 Loader oder Filter wechseln',
     'options.loader': 'Mod-Loader', 'options.ram': 'RAM-Zuteilung', 'verbadge.release': 'Release',
@@ -301,6 +323,7 @@
 
   var it = {
     'nav.home': 'Home', 'nav.versions': 'Versioni', 'nav.mods': 'Mod', 'nav.settings': 'Impostazioni',
+    'skins.notice': 'Gli skin attualmente non funzionano per Vanilla né per altri loader \u2014 il supporto è in arrivo.',
     'auth.offline': 'Offline', 'auth.microsoft': 'Microsoft',
     'login.placeholder': 'Inserisci il tuo nick...',
     'home.heroSub': 'Il futuro del lancio di Minecraft. Veloce, fatto per te.',
@@ -309,7 +332,7 @@
     'build.changeVersion': 'Cambia versione \u2192',
     'profiles.title': 'Profili', 'profiles.save': 'Salva attuale', 'profiles.empty': 'Nessun profilo \u2014 salva la build attuale',
     'profile.title': 'Salva profilo', 'profile.hint': 'Nome per questa build (versione, loader, RAM, Java, JVM)', 'profile.placeholder': 'es. SMP / FPS / Modpack', 'profile.cancel': 'Annulla', 'profile.save': 'Salva',
-    'profile.saved': 'Profilo "{name}" salvato', 'profile.loaded': 'Profilo "{name}" applicato', 'profile.deleteQ': 'Eliminare il profilo "{name}"?', 'profile.nameReq': 'Inserisci un nome di profilo',
+    'profile.saved': 'Profilo "{name}" salvato', 'profile.loaded': 'Profilo "{name}" applicato', 'profile.deleteQ': 'Eliminare il profilo "{name}"?', 'profile.deleteTitle': 'Elimina profilo', 'profile.delete': 'Elimina', 'profile.deleteHint': 'Questa azione non può essere annullata', 'profile.nameReq': 'Inserisci un nome di profilo',
     'versions.title': 'Versioni di Minecraft', 'filter.release': 'Release', 'filter.snapshot': 'Snapshot', 'filter.all': 'Tutte', 'filter.installed': 'Installate', 'filter.beta': 'Beta', 'filter.alpha': 'Alpha',
     'versions.loading': 'Caricamento versioni...', 'versions.none': 'Nessuna versione {loader} per il filtro "{filter}" \u2014 cambia loader o filtro',
     'options.loader': 'Mod loader', 'options.ram': 'Allocazione RAM', 'verbadge.release': 'Release',
@@ -348,6 +371,7 @@
 
   var pt = {
     'nav.home': 'Início', 'nav.versions': 'Versões', 'nav.mods': 'Mods', 'nav.settings': 'Configurações',
+    'skins.notice': 'Os skins atualmente não funcionam para Vanilla nem outros loaders \u2014 o suporte já vem a caminho.',
     'auth.offline': 'Offline', 'auth.microsoft': 'Microsoft',
     'login.placeholder': 'Digite seu nick...',
     'home.heroSub': 'O futuro do lançamento do Minecraft. Rápido, feito para você.',
@@ -356,7 +380,7 @@
     'build.changeVersion': 'Mudar versão \u2192',
     'profiles.title': 'Perfis', 'profiles.save': 'Salvar atual', 'profiles.empty': 'Ainda não há perfis \u2014 salve a build atual',
     'profile.title': 'Salvar perfil', 'profile.hint': 'Nomeie esta build (versão, loader, RAM, Java, JVM)', 'profile.placeholder': 'ex. SMP / FPS / Modpack', 'profile.cancel': 'Cancelar', 'profile.save': 'Salvar',
-    'profile.saved': 'Perfil "{name}" salvo', 'profile.loaded': 'Perfil "{name}" aplicado', 'profile.deleteQ': 'Excluir o perfil "{name}"?', 'profile.nameReq': 'Digite um nome de perfil',
+    'profile.saved': 'Perfil "{name}" salvo', 'profile.loaded': 'Perfil "{name}" aplicado', 'profile.deleteQ': 'Excluir o perfil "{name}"?', 'profile.deleteTitle': 'Excluir perfil', 'profile.delete': 'Excluir', 'profile.deleteHint': 'Esta ação não pode ser desfeita', 'profile.nameReq': 'Digite um nome de perfil',
     'versions.title': 'Versões do Minecraft', 'filter.release': 'Final', 'filter.snapshot': 'Snapshot', 'filter.all': 'Todas', 'filter.installed': 'Instaladas', 'filter.beta': 'Beta', 'filter.alpha': 'Alfa',
     'versions.loading': 'Carregando versões...', 'versions.none': 'Sem versões {loader} para o filtro "{filter}" \u2014 troque de loader ou filtro',
     'options.loader': 'Mod loader', 'options.ram': 'Alocação de RAM', 'verbadge.release': 'Final',
@@ -395,6 +419,7 @@
 
   var pl = {
     'nav.home': 'Strona główna', 'nav.versions': 'Wersje', 'nav.mods': 'Mody', 'nav.settings': 'Ustawienia',
+    'skins.notice': 'Skiny obecnie nie działają ani dla Vanilla, ani dla innych loaderów \u2014 wsparcie już wkrótce.',
     'auth.offline': 'Offline', 'auth.microsoft': 'Microsoft',
     'login.placeholder': 'Wpisz nick...',
     'home.heroSub': 'Przyszłość uruchamiania Minecrafta. Szybko, stworzone dla Ciebie.',
@@ -403,7 +428,7 @@
     'build.changeVersion': 'Zmień wersję \u2192',
     'profiles.title': 'Profile', 'profiles.save': 'Zapisz bieżącą', 'profiles.empty': 'Brak profili \u2014 zapisz bieżącą kompilację',
     'profile.title': 'Zapisz profil', 'profile.hint': 'Nazwij tę kompilację (wersja, loader, RAM, Java, JVM)', 'profile.placeholder': 'np. SMP / FPS / Modpack', 'profile.cancel': 'Anuluj', 'profile.save': 'Zapisz',
-    'profile.saved': 'Profil "{name}" zapisany', 'profile.loaded': 'Profil "{name}" zastosowany', 'profile.deleteQ': 'Usunąć profil "{name}"?', 'profile.nameReq': 'Wpisz nazwę profilu',
+    'profile.saved': 'Profil "{name}" zapisany', 'profile.loaded': 'Profil "{name}" zastosowany', 'profile.deleteQ': 'Usunąć profil "{name}"?', 'profile.deleteTitle': 'Usuwanie profilu', 'profile.delete': 'Usuń', 'profile.deleteHint': 'Tej operacji nie można cofnąć', 'profile.nameReq': 'Wpisz nazwę profilu',
     'versions.title': 'Wersje Minecrafta', 'filter.release': 'Finalne', 'filter.snapshot': 'Snapshoty', 'filter.all': 'Wszystkie', 'filter.installed': 'Zainstalowane', 'filter.beta': 'Beta', 'filter.alpha': 'Alfa',
     'versions.loading': 'Ładowanie wersji...', 'versions.none': 'Brak wersji {loader} dla filtra "{filter}" \u2014 zmień loader lub filtr',
     'options.loader': 'Loader modów', 'options.ram': 'Przydział RAM', 'verbadge.release': 'Finalna',
@@ -442,6 +467,7 @@
 
   var tr = {
     'nav.home': 'Ana Sayfa', 'nav.versions': 'Sürümler', 'nav.mods': 'Modlar', 'nav.settings': 'Ayarlar',
+    'skins.notice': 'Skinler şu anda ne Vanilla ne de diğer loaderlar için çalışmıyor \u2014 destek yolda.',
     'auth.offline': 'Çevrimdışı', 'auth.microsoft': 'Microsoft',
     'login.placeholder': 'Kullanıcı adı gir...',
     'home.heroSub': 'Minecraft başlatmanın geleceği. Hızlı, senin için tasarlandı.',
@@ -450,7 +476,7 @@
     'build.changeVersion': 'Sürüm değiştir \u2192',
     'profiles.title': 'Profiller', 'profiles.save': 'Geçerliyi kaydet', 'profiles.empty': 'Henüz profil yok \u2014 geçerli yapıyı kaydet',
     'profile.title': 'Profili kaydet', 'profile.hint': 'Bu yapıyı adlandır (sürüm, loader, RAM, Java, JVM)', 'profile.placeholder': 'ör. SMP / FPS / Modpack', 'profile.cancel': 'İptal', 'profile.save': 'Kaydet',
-    'profile.saved': '"{name}" profili kaydedildi', 'profile.loaded': '"{name}" profili uygulandı', 'profile.deleteQ': '"{name}" profili silinsin mi?', 'profile.nameReq': 'Profil adı gir',
+    'profile.saved': '"{name}" profili kaydedildi', 'profile.loaded': '"{name}" profili uygulandı', 'profile.deleteQ': '"{name}" profili silinsin mi?', 'profile.deleteTitle': 'Profili sil', 'profile.delete': 'Sil', 'profile.deleteHint': 'Bu işlem geri alınamaz', 'profile.nameReq': 'Profil adı gir',
     'versions.title': 'Minecraft Sürümleri', 'filter.release': 'Kararlı', 'filter.snapshot': 'Snapshot', 'filter.all': 'Tümü', 'filter.installed': 'Kurulu', 'filter.beta': 'Beta', 'filter.alpha': 'Alfa',
     'versions.loading': 'Sürümler yükleniyor...', 'versions.none': '"{filter}" filtresi için {loader} sürümü yok \u2014 loader veya filtre değiştir',
     'options.loader': 'Mod loader', 'options.ram': 'RAM tahsisi', 'verbadge.release': 'Kararlı',
@@ -489,6 +515,7 @@
 
   var zh = {
     'nav.home': '主页面', 'nav.versions': '版本', 'nav.mods': '模组', 'nav.settings': '设置',
+    'skins.notice': '皮肤目前不适用于 Vanilla 和其他加载器 \u2014 支持正在准备中。',
     'auth.offline': '离线', 'auth.microsoft': 'Microsoft',
     'login.placeholder': '输入你的昵称...',
     'home.heroSub': 'Minecraft 启动的未来。快速，为你打造。',
@@ -497,7 +524,7 @@
     'build.changeVersion': '更换版本 \u2192',
     'profiles.title': '配置', 'profiles.save': '保存当前', 'profiles.empty': '暂无配置 \u2014 请保存当前的构建',
     'profile.title': '保存配置', 'profile.hint': '为这个构建命名（版本、加载器、内存、Java、JVM 参数）', 'profile.placeholder': '例如 SMP / FPS / 整合包', 'profile.cancel': '取消', 'profile.save': '保存',
-    'profile.saved': '配置“{name}”已保存', 'profile.loaded': '配置“{name}”已应用', 'profile.deleteQ': '删除配置“{name}”？', 'profile.nameReq': '请输入配置名称',
+    'profile.saved': '配置“{name}”已保存', 'profile.loaded': '配置“{name}”已应用', 'profile.deleteQ': '删除配置“{name}”？', 'profile.deleteTitle': '删除配置', 'profile.delete': '删除', 'profile.deleteHint': '此操作无法撤销', 'profile.nameReq': '请输入配置名称',
     'versions.title': 'Minecraft 版本', 'filter.release': '正式版', 'filter.snapshot': '快照', 'filter.all': '全部', 'filter.installed': '已安装', 'filter.beta': 'Beta', 'filter.alpha': 'Alpha',
     'versions.loading': '正在加载版本...', 'versions.none': '没有可用于“{filter}”筛选的 {loader} 版本 \u2014 请更换加载器或筛选条件',
     'options.loader': '模组加载器', 'options.ram': '内存分配', 'verbadge.release': '正式版',
@@ -536,6 +563,7 @@
 
   var ja = {
     'nav.home': 'ホーム', 'nav.versions': 'バージョン', 'nav.mods': '導入MOD', 'nav.settings': '設定',
+    'skins.notice': '現在、Vanilla やその他のローダーではスキンが動作しません \u2014 サポートは準備中です。',
     'auth.offline': 'オフライン', 'auth.microsoft': 'Microsoft',
     'login.placeholder': 'ユーザー名を入力...',
     'home.heroSub': 'Minecraft起動の未来。速く、あなたのために。',
@@ -544,7 +572,7 @@
     'build.changeVersion': 'バージョン変更 \u2192',
     'profiles.title': 'プロフィール', 'profiles.save': '現在を保存', 'profiles.empty': 'プロフィールはまだありません \u2014 現在の構成を保存してください',
     'profile.title': 'プロフィールを保存', 'profile.hint': 'この構成に名前を付ける（バージョン、ローダー、RAM、Java、JVM）', 'profile.placeholder': '例 SMP / FPS / Modpack', 'profile.cancel': 'キャンセル', 'profile.save': '保存',
-    'profile.saved': 'プロフィール「{name}」を保存しました', 'profile.loaded': 'プロフィール「{name}」を適用しました', 'profile.deleteQ': 'プロフィール「{name}」を削除しますか？', 'profile.nameReq': 'プロフィール名を入力してください',
+    'profile.saved': 'プロフィール「{name}」を保存しました', 'profile.loaded': 'プロフィール「{name}」を適用しました', 'profile.deleteQ': 'プロフィール「{name}」を削除しますか？', 'profile.deleteTitle': 'プロフィールを削除', 'profile.delete': '削除', 'profile.deleteHint': 'この操作は取り消せません', 'profile.nameReq': 'プロフィール名を入力してください',
     'versions.title': 'Minecraft バージョン', 'filter.release': '製品版', 'filter.snapshot': 'スナップショット', 'filter.all': 'すべて', 'filter.installed': 'インストール済み', 'filter.beta': 'Beta', 'filter.alpha': 'Alpha',
     'versions.loading': 'バージョンを読み込み中...', 'versions.none': '「{filter}」フィルターに対応する {loader} バージョンがありません \u2014 ローダーまたはフィルターを変更してください',
     'options.loader': '導入ローダー', 'options.ram': 'RAM 割り当て', 'verbadge.release': '製品版',
@@ -583,6 +611,7 @@
 
   var ko = {
     'nav.home': '홈', 'nav.versions': '버전', 'nav.mods': '모드', 'nav.settings': '설정',
+    'skins.notice': '현재 Vanilla 및 다른 로더에서는 스킨이 작동하지 않습니다 \u2014 지원을 준비 중입니다.',
     'auth.offline': '오프라인', 'auth.microsoft': 'Microsoft',
     'login.placeholder': '닉네임을 입력하세요...',
     'home.heroSub': '마인크래프트 실행의 미래. 빠르게, 당신을 위해.',
@@ -591,7 +620,7 @@
     'build.changeVersion': '버전 변경 \u2192',
     'profiles.title': '프로필', 'profiles.save': '현재 저장', 'profiles.empty': '아직 프로필이 없습니다 \u2014 현재 구성을 저장하세요',
     'profile.title': '프로필 저장', 'profile.hint': '이 구성을 이름 붙이기 (버전, 로더, RAM, Java, JVM)', 'profile.placeholder': '예: SMP / FPS / 모드팩', 'profile.cancel': '취소', 'profile.save': '저장',
-    'profile.saved': '"{name}" 프로필이 저장되었습니다', 'profile.loaded': '"{name}" 프로필이 적용되었습니다', 'profile.deleteQ': '"{name}" 프로필을 삭제할까요?', 'profile.nameReq': '프로필 이름을 입력하세요',
+    'profile.saved': '"{name}" 프로필이 저장되었습니다', 'profile.loaded': '"{name}" 프로필이 적용되었습니다', 'profile.deleteQ': '"{name}" 프로필을 삭제할까요?', 'profile.deleteTitle': '프로필 삭제', 'profile.delete': '삭제', 'profile.deleteHint': '이 작업은 되돌릴 수 없습니다', 'profile.nameReq': '프로필 이름을 입력하세요',
     'versions.title': '마인크래프트 버전', 'filter.release': '정식', 'filter.snapshot': '스냅샷', 'filter.all': '모두', 'filter.installed': '설치됨', 'filter.beta': 'Beta', 'filter.alpha': 'Alpha',
     'versions.loading': '버전을 불러오는 중...', 'versions.none': '"{filter}" 필터에 해당하는 {loader} 버전이 없습니다 \u2014 로더 또는 필터를 바꾸세요',
     'options.loader': '모드 로더', 'options.ram': 'RAM 할당', 'verbadge.release': '정식',
@@ -630,6 +659,7 @@
 
   var ar = {
     'nav.home': 'الرئيسية', 'nav.versions': 'الإصدارات', 'nav.mods': 'الإضافات', 'nav.settings': 'الإعدادات',
+    'skins.notice': 'حالياً لا تعمل السكاين مع Vanilla أو بقية اللوادر \u2014 الدعم قادم قريباً.',
     'auth.offline': 'دون اتصال', 'auth.microsoft': 'Microsoft',
     'login.placeholder': 'أدخل اسمك...',
     'home.heroSub': 'مستقبل تشغيل ماينكرافت. سريع، صُمم لك.',
@@ -638,7 +668,7 @@
     'build.changeVersion': 'تغيير الإصدار \u2192',
     'profiles.title': 'الملفات الشخصية', 'profiles.save': 'حفظ الحالي', 'profiles.empty': 'لا توجد ملفات بعد \u2014 احفظ البناء الحالي',
     'profile.title': 'حفظ الملف الشخصي', 'profile.hint': 'سمِّ هذا البناء (الإصدار، المحمّل، الذاكرة، Java، JVM)', 'profile.placeholder': 'مثل SMP / FPS / حزمة تعديلات', 'profile.cancel': 'إلغاء', 'profile.save': 'حفظ',
-    'profile.saved': 'تم حفظ الملف "{name}"', 'profile.loaded': 'تم تطبيق الملف "{name}"', 'profile.deleteQ': 'حذف الملف "{name}"؟', 'profile.nameReq': 'أدخل اسم الملف الشخصي',
+    'profile.saved': 'تم حفظ الملف "{name}"', 'profile.loaded': 'تم تطبيق الملف "{name}"', 'profile.deleteQ': 'حذف الملف "{name}"؟', 'profile.deleteTitle': 'حذف الملف', 'profile.delete': 'حذف', 'profile.deleteHint': 'لا يمكن التراجع عن هذا الإجراء', 'profile.nameReq': 'أدخل اسم الملف الشخصي',
     'versions.title': 'إصدارات ماينكرافت', 'filter.release': 'الرسمية', 'filter.snapshot': 'التجريبية', 'filter.all': 'الكل', 'filter.installed': 'المثبتة', 'filter.beta': 'بيتا', 'filter.alpha': 'ألفا',
     'versions.loading': 'جارٍ تحميل الإصدارات...', 'versions.none': 'لا توجد إصدارات {loader} لفلتر "{filter}" \u2014 غيّر المحمّل أو الفلتر',
     'options.loader': 'محمّل التعديلات', 'options.ram': 'تخصيص الذاكرة', 'verbadge.release': 'رسمي',

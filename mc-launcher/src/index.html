@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VOID CLIENT</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="vendor/mc-skinviewer.css">
 </head>
 <body>
     <canvas id="particles"></canvas>
@@ -47,17 +48,21 @@
                                         <button class="auth-toggle-btn active" id="auth-mode-offline" data-i18n="auth.offline">Offline</button>
                                         <button class="auth-toggle-btn" id="auth-mode-microsoft" data-i18n="auth.microsoft">Microsoft</button>
                                     </div>
-                                    <div id="auth-offline-box">
-                                        <input type="text" id="username-input" class="glass-input username-input" placeholder="Enter username..." value="VoidPlayer" spellcheck="false" data-i18n-placeholder="login.placeholder">
-                                    </div>
-                                    <div id="auth-ms-box" class="hidden">
-                                        <div class="ms-account" id="ms-account">
-                                            <div class="ms-account-info">
-                                                <span class="ms-account-name" id="ms-account-name" data-i18n="ms.notSignedIn">Not signed in</span>
-                                                <span class="ms-account-sub" id="ms-account-sub" data-i18n="ms.sub">Sign in to play with your Microsoft account</span>
+                                    <div class="auth-flip" id="auth-flip">
+                                        <div class="auth-flip-inner">
+                                            <div id="auth-offline-box" class="auth-face auth-face-front">
+                                                <input type="text" id="username-input" class="glass-input username-input" placeholder="Enter username..." value="VoidPlayer" spellcheck="false" data-i18n-placeholder="login.placeholder">
                                             </div>
-                                            <button class="btn-secondary hidden" id="btn-ms-login" data-i18n="ms.signIn">Sign In</button>
-                                            <button class="btn-secondary btn-danger hidden" id="btn-ms-logout" data-i18n="ms.signOut">Sign Out</button>
+                                            <div id="auth-ms-box" class="auth-face auth-face-back">
+                                                <div class="ms-account" id="ms-account">
+                                                    <div class="ms-account-info">
+                                                        <span class="ms-account-name" id="ms-account-name" data-i18n="ms.notSignedIn">Not signed in</span>
+                                                        <span class="ms-account-sub" id="ms-account-sub" data-i18n="ms.sub">Sign in to play with your Microsoft account</span>
+                                                    </div>
+                                                    <button class="btn-secondary hidden" id="btn-ms-login" data-i18n="ms.signIn">Sign In</button>
+                                                    <button class="btn-secondary btn-danger hidden" id="btn-ms-logout" data-i18n="ms.signOut">Sign Out</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     <button class="btn-primary btn-play" id="btn-play">
@@ -201,6 +206,150 @@
                     <div class="installed-mods-list" id="installed-mods-list">
                         <div class="mod-empty" data-i18n="mods.noInstalled">No mods installed</div>
                     </div>
+                </div>
+            </div>
+
+            <!-- SKINS -->
+            <div class="panel" id="panel-skins">
+                <div class="panel-header">
+                    <h2 data-i18n="skins.title">Skins</h2>
+                </div>
+                <div class="skins-notice" data-i18n="skins.notice">Skin support is currently unavailable for Vanilla and other loaders.</div>
+                <div class="glass-card settings-card">
+                    <div class="setting-row setting-col">
+                        <label data-i18n="skins.nick">Player name</label>
+                        <input type="text" id="skins-name-input" class="glass-input" placeholder="Steve" spellcheck="false" maxlength="16">
+                    </div>
+                    <div class="setting-row">
+                        <label data-i18n="skins.model">Model</label>
+                        <div class="custom-select">
+                            <button class="select-trigger" id="skins-model-trigger">Classic (Steve)</button>
+                            <div class="select-dropdown" id="skins-model-dropdown">
+                                <div class="select-option active" data-value="classic">Classic (Steve)</div>
+                                <div class="select-option" data-value="slim">Slim (Alex)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-row setting-col">
+                        <label data-i18n="skins.file">Skin file (PNG)</label>
+                        <div class="setting-action skins-file-row">
+                            <button class="btn-secondary" id="btn-pick-skin" data-i18n="skins.choose">Choose PNG</button>
+                            <span class="setting-value" id="skins-file-name" data-i18n="skins.noFile">No file selected</span>
+                        </div>
+                        <div class="skins-preview hidden" id="skins-preview-wrap">
+                            <div class="skins-3d-scene" id="skins-preview-3d">
+                                <div id="skin-3d-player" class="mc-skin-viewer-9x spin">
+                                    <div class="player">
+                                        <div class="head">
+                                            <div class="top"></div>
+                                            <div class="left"></div>
+                                            <div class="front"></div>
+                                            <div class="right"></div>
+                                            <div class="back"></div>
+                                            <div class="bottom"></div>
+                                            <div class="accessory">
+                                                <div class="top"></div>
+                                                <div class="left"></div>
+                                                <div class="front"></div>
+                                                <div class="right"></div>
+                                                <div class="back"></div>
+                                                <div class="bottom"></div>
+                                            </div>
+                                        </div>
+                                        <div class="body">
+                                            <div class="top"></div>
+                                            <div class="left"></div>
+                                            <div class="front"></div>
+                                            <div class="right"></div>
+                                            <div class="back"></div>
+                                            <div class="bottom"></div>
+                                            <div class="accessory">
+                                                <div class="top"></div>
+                                                <div class="left"></div>
+                                                <div class="front"></div>
+                                                <div class="right"></div>
+                                                <div class="back"></div>
+                                                <div class="bottom"></div>
+                                            </div>
+                                        </div>
+                                        <div class="left-arm">
+                                            <div class="top"></div>
+                                            <div class="left"></div>
+                                            <div class="front"></div>
+                                            <div class="right"></div>
+                                            <div class="back"></div>
+                                            <div class="bottom"></div>
+                                            <div class="accessory">
+                                                <div class="top"></div>
+                                                <div class="left"></div>
+                                                <div class="front"></div>
+                                                <div class="right"></div>
+                                                <div class="back"></div>
+                                                <div class="bottom"></div>
+                                            </div>
+                                        </div>
+                                        <div class="right-arm">
+                                            <div class="top"></div>
+                                            <div class="left"></div>
+                                            <div class="front"></div>
+                                            <div class="right"></div>
+                                            <div class="back"></div>
+                                            <div class="bottom"></div>
+                                            <div class="accessory">
+                                                <div class="top"></div>
+                                                <div class="left"></div>
+                                                <div class="front"></div>
+                                                <div class="right"></div>
+                                                <div class="back"></div>
+                                                <div class="bottom"></div>
+                                            </div>
+                                        </div>
+                                        <div class="left-leg">
+                                            <div class="top"></div>
+                                            <div class="left"></div>
+                                            <div class="front"></div>
+                                            <div class="right"></div>
+                                            <div class="back"></div>
+                                            <div class="bottom"></div>
+                                            <div class="accessory">
+                                                <div class="top"></div>
+                                                <div class="left"></div>
+                                                <div class="front"></div>
+                                                <div class="right"></div>
+                                                <div class="back"></div>
+                                                <div class="bottom"></div>
+                                            </div>
+                                        </div>
+                                        <div class="right-leg">
+                                            <div class="top"></div>
+                                            <div class="left"></div>
+                                            <div class="front"></div>
+                                            <div class="right"></div>
+                                            <div class="back"></div>
+                                            <div class="bottom"></div>
+                                            <div class="accessory">
+                                                <div class="top"></div>
+                                                <div class="left"></div>
+                                                <div class="front"></div>
+                                                <div class="right"></div>
+                                                <div class="back"></div>
+                                                <div class="bottom"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setting-row">
+                        <button class="btn-primary" id="btn-upload-skin" data-i18n="skins.upload">Upload skin</button>
+                    </div>
+                    <div class="setting-divider"></div>
+                    <div class="setting-sub" data-i18n="skins.hint">Offline skins work on Fabric / Quilt profiles via CustomSkinLoader.</div>
+                    <div class="setting-row">
+                        <button class="btn-secondary" id="btn-ensure-csl" data-i18n="skins.setup">Install / set up CustomSkinLoader</button>
+                    </div>
+                    <div class="settings-status" id="skins-status"></div>
                 </div>
             </div>
 
@@ -353,6 +502,10 @@
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="7.5 4.21 12 6.81 16.5 4.21"/><line x1="12" y1="22.08" x2="12" y2="6.81"/></svg>
             <span data-i18n="nav.mods">Mods</span>
         </button>
+        <button class="nav-btn" data-panel="skins" title="Skins">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span data-i18n="nav.skins">Skins</span>
+        </button>
         <button class="nav-btn" data-panel="settings" title="Settings">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
             <span data-i18n="nav.settings">Settings</span>
@@ -483,6 +636,24 @@
                 <div class="profile-prompt-actions">
                     <button class="btn-secondary" id="btn-profile-cancel" data-i18n="profile.cancel">Cancel</button>
                     <button class="btn-primary" id="btn-profile-ok" data-i18n="profile.save">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete profile confirmation modal -->
+    <div class="modal-overlay hidden" id="delete-profile-modal">
+        <div class="modal glass-card delete-profile-modal">
+            <div class="modal-header">
+                <h2><span class="delete-warn-icon"></span><span data-i18n="profile.deleteTitle">Delete profile</span></h2>
+                <button class="btn-secondary" id="btn-close-delete-profile">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="delete-profile-msg" id="delete-profile-msg"></p>
+                <p class="delete-profile-sub" data-i18n="profile.deleteHint">This action cannot be undone</p>
+                <div class="profile-prompt-actions">
+                    <button class="btn-secondary btn-delete-cancel" id="btn-delete-cancel" data-i18n="profile.cancel">Cancel</button>
+                    <button class="btn-danger-solid" id="btn-delete-confirm" data-i18n="profile.delete">Delete</button>
                 </div>
             </div>
         </div>
