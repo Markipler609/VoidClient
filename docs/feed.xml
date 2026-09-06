@@ -7,6 +7,13 @@
   <updated>2026-09-06T00:00:00Z</updated>
   <author><name>Markipler609</name></author>
   <entry>
+    <title>v1.0.2 — Discord community server</title>
+    <id>https://github.com/Markipler609/VoidClient/releases/tag/v1.0.2</id>
+    <link href="https://github.com/Markipler609/VoidClient/releases/tag/v1.0.2" />
+    <updated>2026-09-06T00:00:00Z</updated>
+    <summary>Rich Presence now shows a Join button pointing to the official Discord community. Site footer and nav link to the server too.</summary>
+  </entry>
+  <entry>
     <title>v1.0.1 — auto-update, telemetry, macOS</title>
     <id>https://github.com/Markipler609/VoidClient/releases/tag/v1.0.1</id>
     <link href="https://github.com/Markipler609/VoidClient/releases/tag/v1.0.1" />

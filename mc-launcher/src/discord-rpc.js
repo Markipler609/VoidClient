@@ -11,11 +11,14 @@
 // ═══════════════════════════════════════════════════════════════
 
 const DISCORD_APP_ID = '1545736322801602610';
+const DISCORD_INVITE_URL = 'https://discord.gg/pxkffhb54v';
 
 let client = null;
 let connected = false;
 let current = null;
 let logFn = (...args) => console.log(...args);
+
+const JOIN_BUTTON = { label: 'Join Discord', url: DISCORD_INVITE_URL };
 
 function appId() {
     return process.env.VOID_DISCORD_APP_ID || DISCORD_APP_ID;
@@ -70,6 +73,7 @@ function setMenu() {
         startTimestamp: Date.now(),
         largeImageKey: 'void_logo',
         largeImageText: 'VOID CLIENT',
+        buttons: [JOIN_BUTTON],
         instance: false,
     });
 }
@@ -81,6 +85,7 @@ function setInGame(version) {
         startTimestamp: Date.now(),
         largeImageKey: 'void_logo',
         largeImageText: 'VOID CLIENT',
+        buttons: [JOIN_BUTTON],
         instance: true,
     });
 }
@@ -92,6 +97,7 @@ function setInstalling(step) {
         startTimestamp: Date.now(),
         largeImageKey: 'void_logo',
         largeImageText: 'VOID CLIENT',
+        buttons: [JOIN_BUTTON],
         instance: false,
     });
 }
