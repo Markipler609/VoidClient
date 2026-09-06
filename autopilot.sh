@@ -27,7 +27,7 @@ check() {
 }
 check counter   "http://x95027pc.beget.tech/counter.php"                         200
 check site      "http://x95027pc.beget.tech/"                                   200
-check telemetry "http://x95027pc.beget.tech/api/telemetry.php"                  200
+check telemetry "http://x95027pc.beget.tech/api/telemetry.php?health=1"          200
 check stats401  "http://x95027pc.beget.tech/api/stats.php"                      401
 check pages     "https://markipler609.github.io/VoidClient/version.json"        200
 check feed      "https://markipler609.github.io/VoidClient/feed.xml"            200

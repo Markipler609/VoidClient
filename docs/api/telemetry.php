@@ -7,6 +7,12 @@ header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { http_response_code(204); exit; }
 
+// Health probe (no data written) — used by the autopilot
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['health'])) {
+    echo json_encode(array('ok' => true));
+    exit;
+}
+
 $data = null;
 $raw = file_get_contents('php://input');
 if ($raw) $data = json_decode($raw, true);
