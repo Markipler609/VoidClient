@@ -21,6 +21,10 @@ if (!TOKEN) {
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) VOIDDiscordBot/1.0';
 
+const SYSTEM_PROMPT = 'You are the VOID CLIENT assistant — a Discord AI helper for the VOID CLIENT Minecraft launcher community. You help with releases, skins, launcher setup, troubleshooting and general questions about VOID CLIENT. Be concise and friendly, answer in the user\'s language. Keep the conversation context in mind.';
+const MEMORY_TURNS = 14;
+const chatMem = new Map();
+
 const BASE_INTENTS = [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages];
 
 function startClient(withContentIntent) {
@@ -59,13 +63,13 @@ function allowed(msg) {
     return false;
 }
 
-async function askAI(prompt) {
+async function askAI(history) {
     if (!AI_KEY) return 'AI is not configured (AI_KEY missing in .env).';
     try {
         const r = await fetch(AI_BASE + '/chat/completions', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + AI_KEY },
-            body: JSON.stringify({ model: AI_MODEL, messages: [{ role: 'user', content: prompt }], max_tokens: 500 }),
+            body: JSON.stringify({ model: AI_MODEL, messages: [{ role: 'system', content: SYSTEM_PROMPT }].concat(history), max_tokens: 500 }),
             signal: AbortSignal.timeout(60000),
         });
         if (r.status !== 200) {
@@ -145,7 +149,8 @@ client.on('messageCreate', async (msg) => {
             '`' + PREFIX + 'latest` — latest release info\n' +
             '`' + PREFIX + 'announce <text>` — post an announcement\n' +
             '`' + PREFIX + 'announce-update <version>` — release announcement for a version\n' +
-            '`' + PREFIX + 'ask <text>` — ask the AI assistant\n' +
+            '`' + PREFIX + 'ask <text>` — ask the AI assistant (remembers context)\n' +
+            '`' + PREFIX + 'reset` — clear your AI context\n' +
             '`' + PREFIX + 'status` — ecosystem health check'
         );
     }
@@ -180,11 +185,22 @@ client.on('messageCreate', async (msg) => {
 
     if (cmd === 'ask') {
         if (!text) return msg.reply('Usage: `' + PREFIX + 'ask <question>`');
+        const key = `${msg.guild.id}:${msg.channel.id}:${msg.author.id}`;
+        const history = chatMem.get(key) || [];
+        history.push({ role: 'user', content: text.slice(0, 1200) });
+        const send = history.slice(-MEMORY_TURNS);
         await msg.channel.sendTyping();
-        const answer = await askAI(text);
+        const answer = await askAI(send);
+        send.push({ role: 'assistant', content: answer.slice(0, 1500) });
+        chatMem.set(key, send.slice(-MEMORY_TURNS));
         const chunks = answer.match(/[\s\S]{1,1950}/g) || ['(no response)'];
         for (const c of chunks) await msg.channel.send(c);
         return;
+    }
+
+    if (cmd === 'reset') {
+        chatMem.delete(`${msg.guild.id}:${msg.channel.id}:${msg.author.id}`);
+        return msg.reply('🧠 Context cleared for you.');
     }
 
 if (cmd === 'status') {
