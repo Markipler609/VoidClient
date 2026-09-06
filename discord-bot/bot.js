@@ -8,6 +8,9 @@ const HEALTH_BASE = process.env.HEALTH_BASE || 'http://x95027pc.beget.tech';
 const ADMIN_ROLE_IDS = (process.env.ADMIN_ROLE_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
 const GUILD_ID = process.env.GUILD_ID || '';
 const ANNOUNCE_CHANNEL_ID = process.env.ANNOUNCE_CHANNEL_ID || null;
+const AI_BASE = process.env.AI_BASE || 'http://localhost:20128/v1';
+const AI_KEY = process.env.AI_KEY || '';
+const AI_MODEL = process.env.AI_MODEL || 'minimax-m2.5';
 
 if (!TOKEN) {
     console.error('DISCORD_BOT_TOKEN is not set. Copy .env.example to .env and fill it in.');
@@ -16,12 +19,11 @@ if (!TOKEN) {
 
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) VOIDDiscordBot/1.0';
 
-const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMessages,
-    ],
-});
+const BASE_INTENTS = [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages];
+
+function startClient(withContentIntent) {
+    const intents = withContentIntent ? [...BASE_INTENTS, GatewayIntentBits.MessageContent] : BASE_INTENTS;
+    const client = new Client({ intents: intents });
 
 function makeCheck(name, url, expected) {
     return async () => {
@@ -47,6 +49,27 @@ const CHECKS = [
 function allowed(msg) {
     if (!ADMIN_ROLE_IDS.length) return true;
     return msg.member && msg.member.roles.cache.some(role => ADMIN_ROLE_IDS.includes(role.id));
+}
+
+async function askAI(prompt) {
+    if (!AI_KEY) return 'AI is not configured (AI_KEY missing in .env).';
+    try {
+        const r = await fetch(AI_BASE + '/chat/completions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + AI_KEY },
+            body: JSON.stringify({ model: AI_MODEL, messages: [{ role: 'user', content: prompt }], max_tokens: 500 }),
+            signal: AbortSignal.timeout(60000),
+        });
+        if (r.status !== 200) {
+            const t = await r.text().catch(() => '');
+            return 'AI error HTTP ' + r.status + (t ? ': ' + t.slice(0, 200) : '');
+        }
+        const j = await r.json();
+        const content = (j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content) || '';
+        return String(content).slice(0, 1500) || '(no response)';
+    } catch (e) {
+        return 'AI request failed: ' + (e && e.message);
+    }
 }
 
 async function latestRelease(version) {
@@ -88,7 +111,7 @@ client.once('ready', () => {
 function commandFrom(msg) {
     if (!msg.content) return null;
     let content = msg.content;
-    const mentioned = msg.mentions && msg.mentions.has(client.user.id);
+    const mentioned = msg.mentions && msg.mentions.has(msg.client.user.id);
     if (!mentioned && !content.startsWith(PREFIX)) return null;
     if (mentioned) content = content.replace(/<@!?\d+>/g, ' ').trim();
     if (!content) return null;
@@ -114,6 +137,7 @@ client.on('messageCreate', async (msg) => {
             '`' + PREFIX + 'latest` — latest release info\n' +
             '`' + PREFIX + 'announce <text>` — post an announcement\n' +
             '`' + PREFIX + 'announce-update <version>` — release announcement for a version\n' +
+            '`' + PREFIX + 'ask <text>` — ask the AI assistant\n' +
             '`' + PREFIX + 'status` — ecosystem health check'
         );
     }
@@ -146,7 +170,16 @@ client.on('messageCreate', async (msg) => {
         return channel.send({ embeds: [releaseEmbed(rel)] });
     }
 
-    if (cmd === 'status') {
+    if (cmd === 'ask') {
+        if (!text) return msg.reply('Usage: `' + PREFIX + 'ask <question>`');
+        await msg.channel.sendTyping();
+        const answer = await askAI(text);
+        const chunks = answer.match(/[\s\S]{1,1950}/g) || ['(no response)'];
+        for (const c of chunks) await msg.channel.send(c);
+        return;
+    }
+
+if (cmd === 'status') {
         const results = await Promise.all(CHECKS.map(fn => fn()));
         const lines = results.map(r => {
             const mark = r.code === r.expected ? '✅' : (r.code === 403 ? '⚠️' : '❌');
@@ -162,4 +195,20 @@ client.on('messageCreate', async (msg) => {
     }
 });
 
-client.login(TOKEN);
+client.once('ready', () => {
+    console.log(`[VOID BOT] online as ${client.user.tag}`);
+    client.user.setPresence({ activities: [{ name: 'VOID CLIENT updates', type: ActivityType.Watching }], status: 'online' });
+});
+
+client.login(TOKEN).catch((err) => {
+    if (withContentIntent && String(err && err.message).includes('disallowed intents')) {
+        console.warn('[VOID BOT] Message Content intent disabled in portal — falling back to @-mention commands');
+        startClient(false);
+    } else {
+        console.error('[VOID BOT] login failed:', (err && err.message) || err);
+        process.exit(1);
+    }
+});
+}
+
+startClient(true);
