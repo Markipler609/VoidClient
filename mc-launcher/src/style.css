@@ -98,6 +98,8 @@ input[type="text"], input[type="search"] { cursor: text; }
 }
 .titlebar-left { padding-left: 14px; display: flex; align-items: center; gap: 6px; }
 .titlebar-logo { font-size: 12px; font-weight: 800; letter-spacing: 2px; color: var(--text); }
+.titlebar-version { font-size: 10px; font-weight: 600; letter-spacing: 1px; color: var(--textDim); -webkit-app-region: no-drag; white-space: nowrap; }
+.titlebar-version.has-update { color: #ffd166; cursor: pointer; }
 .titlebar-center { flex: 1; -webkit-app-region: drag; height: 100%; }
 .titlebar-right { display: flex; -webkit-app-region: no-drag; }
 .titlebar-btn {

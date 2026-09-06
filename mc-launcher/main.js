@@ -419,6 +419,21 @@ async function checkForUpdates() {
     }
 }
 
+// Launcher version badge (shown in the titlebar)
+ipcMain.handle('get-version-info', async () => {
+    const current = app.getVersion();
+    let latest = null;
+    try {
+        const data = await httpGet(UPDATE_MANIFEST_URL);
+        latest = String(data?.version || '').trim() || null;
+    } catch { latest = null; }
+    return {
+        current,
+        latest,
+        updateAvailable: !!(latest && newerVersion(latest, current)),
+    };
+});
+
 // ═══════════════ MC VERSION MANIFEST ═══════════════
 let versionManifest = null;
 ipcMain.handle('get-versions', async () => {

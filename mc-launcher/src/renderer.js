@@ -42,6 +42,17 @@ let theme = {
 // ═══════════════ INIT ═══════════════
 document.addEventListener('DOMContentLoaded', async () => {
     loadSettings();
+    ipcRenderer.invoke('get-version-info').then(info => {
+        const el = document.getElementById('launcher-version');
+        if (!el || !info || !info.current) return;
+        el.textContent = info.updateAvailable ? `v${info.current} \u2192 v${info.latest}` : `v${info.current}`;
+        if (info.updateAvailable) {
+            el.classList.add('has-update');
+            el.title = 'Update available';
+        } else {
+            el.title = 'Up to date';
+        }
+    }).catch(() => {});
     window.VIOnLangChange = (code) => { lang = code; saveSettings(); resyncAllCustomSelects(); };
     window.VI.onApply = () => { resyncAllCustomSelects(); };
     window.VI.setLang(lang);

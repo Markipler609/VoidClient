@@ -1,0 +1,14 @@
+{
+  "name": "void-discord-bot",
+  "version": "1.0.0",
+  "description": "VOID CLIENT Discord bot — update announcements + admin monitoring",
+  "main": "bot.js",
+  "private": true,
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.15.3",
+    "dotenv": "^16.4.5"
+  }
+}

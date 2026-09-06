@@ -159,6 +159,25 @@ PY
       commit -m "autopilot: ship v$PKG_VER (manifest hashes + feed + changelog)" 2>&1 | sed 's/^/  /'
   git push origin main 2>&1 | sed 's/^/  /'
   note "release v$PKG_VER shipped"
+
+  if [ -n "${DISCORD_WEBHOOK_URL:-}" ]; then
+    python3 - "$PKG_VER" "$SUBJ" <<'PY' > /tmp/discord_payload.json
+import json, sys
+ver, subj = sys.argv[1], sys.argv[2][:500]
+print(json.dumps({
+    "content": f"🚀 **VOID CLIENT {ver} is here!**",
+    "embeds": [{
+        "title": "VOID CLIENT " + ver,
+        "url": "https://github.com/Markipler609/VoidClient/releases/tag/v" + ver,
+        "description": subj or "New release available. Grab it from the download page or let the launcher update itself.",
+        "color": 16750080,
+    }],
+}, ensure_ascii=False))
+PY
+    curl -s -o /dev/null -X POST "$DISCORD_WEBHOOK_URL" -H "Content-Type: application/json" --data @/tmp/discord_payload.json && echo "  discord announce sent" || warn "discord webhook announce failed"
+  else
+    warn "DISCORD_WEBHOOK_URL not set — skipping Discord announcement"
+  fi
 else
   note "no unreleased version in mc-launcher/package.json — nothing to ship"
 fi
