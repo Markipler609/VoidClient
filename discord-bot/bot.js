@@ -6,7 +6,9 @@ const PREFIX = process.env.BOT_PREFIX || '!';
 const REPO = process.env.REPO || 'Markipler609/VoidClient';
 const HEALTH_BASE = process.env.HEALTH_BASE || 'http://x95027pc.beget.tech';
 const ADMIN_ROLE_IDS = (process.env.ADMIN_ROLE_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
-const GUILD_ID = process.env.GUILD_ID || '';
+const ADMIN_USER_IDS = (process.env.ADMIN_USER_IDS || '').split(',').map(s => s.trim()).filter(Boolean);
+const ADMIN_USERNAMES = (process.env.ADMIN_USERNAMES || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+const GUILD_IDS = (process.env.GUILD_ID || '').split(',').map(s => s.trim()).filter(Boolean);
 const ANNOUNCE_CHANNEL_ID = process.env.ANNOUNCE_CHANNEL_ID || null;
 const AI_BASE = process.env.AI_BASE || 'http://localhost:20128/v1';
 const AI_KEY = process.env.AI_KEY || '';
@@ -47,8 +49,14 @@ const CHECKS = [
 ];
 
 function allowed(msg) {
-    if (!ADMIN_ROLE_IDS.length) return true;
-    return msg.member && msg.member.roles.cache.some(role => ADMIN_ROLE_IDS.includes(role.id));
+    const uid = msg.author.id;
+    if (ADMIN_USER_IDS.includes(uid)) return true;
+    const unames = [msg.author.username, msg.author.globalName].filter(Boolean).map(n => n.toLowerCase().replace(/#\d+$/, ''));
+    if (unames.some(n => ADMIN_USERNAMES.includes(n))) return true;
+    if (ADMIN_ROLE_IDS.length) {
+        return msg.member && msg.member.roles.cache.some(role => ADMIN_ROLE_IDS.includes(role.id));
+    }
+    return false;
 }
 
 async function askAI(prompt) {
@@ -124,7 +132,7 @@ function commandFrom(msg) {
 
 client.on('messageCreate', async (msg) => {
     if (msg.author.bot || !msg.guild) return;
-    if (GUILD_ID && msg.guild.id !== GUILD_ID) return;
+    if (GUILD_IDS.length && !GUILD_IDS.includes(msg.guild.id)) return;
     const parsed = commandFrom(msg);
     if (!parsed) return;
     const { cmd, args, text } = parsed;
