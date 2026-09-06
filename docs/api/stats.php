@@ -12,27 +12,37 @@ $file = dirname(__DIR__) . '/telemetry.jsonl';
 $agg_file = dirname(__DIR__) . '/telemetry_daily.json';
 
 $total = 0;
-$byVersion = [];
-$byPlatform = [];
-$byArch = [];
-$unique = [];
-$rows = [];
+$byVersion = array();
+$byPlatform = array();
+$byArch = array();
+$unique = array();
+$rows = array();
 
 if (file_exists($file)) {
-    foreach (file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
-        $e = json_decode((string)$line, true);
-        if (!$e) continue;
-        $total++;
-        $byVersion[$e['version'] ?? '?'] = ($byVersion[$e['version'] ?? '?'] ?? 0) + 1;
-        $byPlatform[$e['platform'] ?? '?'] = ($byPlatform[$e['platform'] ?? '?'] ?? 0) + 1;
-        $byArch[$e['arch'] ?? '?'] = ($byArch[$e['arch'] ?? '?'] ?? 0) + 1;
-        $unique[$e['install_id'] ?? ''] = true;
-        $rows[] = $e;
+    $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    if ($lines) {
+        foreach ($lines as $line) {
+            $e = json_decode((string)$line, true);
+            if (!$e) continue;
+            $total++;
+            $v = isset($e['version']) ? $e['version'] : '?';
+            $byVersion[$v] = (isset($byVersion[$v]) ? $byVersion[$v] : 0) + 1;
+            $p = isset($e['platform']) ? $e['platform'] : '?';
+            $byPlatform[$p] = (isset($byPlatform[$p]) ? $byPlatform[$p] : 0) + 1;
+            $a = isset($e['arch']) ? $e['arch'] : '?';
+            $byArch[$a] = (isset($byArch[$a]) ? $byArch[$a] : 0) + 1;
+            $id = isset($e['install_id']) ? $e['install_id'] : '';
+            $unique[$id] = true;
+            $rows[] = $e;
+        }
     }
 }
 
-$daily = [];
-if (file_exists($agg_file)) $daily = json_decode(file_get_contents($agg_file), true);
+$daily = array();
+if (file_exists($agg_file)) {
+    $tmp = json_decode(file_get_contents($agg_file), true);
+    if (is_array($tmp)) $daily = $tmp;
+}
 arsort($daily);
 
 function rows($label, $map) {
@@ -75,7 +85,7 @@ td{color:#c8c8c8}
 <p class="muted">Последние записи:</p>
 <pre style="border:1px solid #26262e;padding:12px;max-width:860px;overflow:auto"><?php
 foreach (array_slice(array_reverse($rows), 0, 20) as $r) {
-    echo json_encode($r, JSON_UNESCAPED_SLASHES), "\n";
+    echo json_encode($r), "\n";
 }
 ?></pre>
 </body>
