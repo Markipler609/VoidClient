@@ -1,30 +1,35 @@
 {
-    "version": "1.0.2",
-    "date": "2026-09-06",
-    "minecraft_version": "1.21.4",
+    "version": "1.0.3",
+    "date": "2026-09-07",
+    "minecraft_version": "1.0-1.21.4",
     "downloads": {
         "win_installer": {
-            "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.2/VOID_Client_Setup_1.0.2.exe",
-            "sha256": "30b7a37cba4a7ff0d80558e5c2498314c1c00d14cb12b7166ee804144786aea3"
+            "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.3/VOID_Client_Setup_1.0.3.exe",
+            "sha256": "a738ef6b18888d116c510508374e30e9eab54bb87297e080c3cd752024b0d96d"
         },
         "win_portable": {
-            "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.2/VOID_Launcher.exe",
-            "sha256": "2a9b1936f49e12aa0125f998e838dec1ead032279976cc2766bb4f802cea8924"
+            "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.3/VOID_Launcher.exe",
+            "sha256": "f6e58878f463a41e12223ff2054d79b3fb645c1a9d3ee639b2259917b66ba280"
         },
         "linux": {
-            "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.2/void-client-1.0.2.tar.gz",
-            "sha256": "f4220f60f2228a17998fcf8fc93fbda6fc2de73e7818fbea005fa63eba183135"
+            "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.3/void-client-1.0.3.tar.gz",
+            "sha256": "d98f2edc6129937b0207eb3d56bfe6c14ef5ef29ba86c196d3880fe1116c518d"
         },
         "mac_x64": {
-            "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.2/VOID_Client_1.0.2-x64.dmg",
-            "sha256": "68c4394c3d0442599ee1b69bd3cb680c45a189778d005d086726481a60101b5a"
+            "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.3/VOID_Client_1.0.3-x64.dmg",
+            "sha256": "5d70085bd83f912279c5668e6ea9713eb6fa21fe023434df2f260b2f749ce4b3"
         },
         "mac_arm64": {
-            "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.2/VOID_Client_1.0.2-arm64.dmg",
-            "sha256": "8b661ab3f8f95ca6d73eb4ddfc06774afc26cce2d78e89940da283beaa6b839c"
+            "url": "https://github.com/Markipler609/VoidClient/releases/download/v1.0.3/VOID_Client_1.0.3-arm64.dmg",
+            "sha256": "2811bcca4a1faf7d9666a1ae0db5eca8be3b79f5a707adb7ed6f1b2d87529cad"
         }
     },
     "notices": [
+        {
+            "id": "v103",
+            "title": "VOID CLIENT 1.0.3",
+            "body": "Launcher-styled profile deletion, custom-skin fixes and glass-tint polish. Now with native delete confirmation in all 14 languages."
+        },
         {
             "id": "v102",
             "title": "VOID CLIENT 1.0.2",
