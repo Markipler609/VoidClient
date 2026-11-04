@@ -459,3 +459,41 @@ body::before {
     .dp-btns .btn { width: 100%; }
     .win-nav { transform: translateX(-50%) scale(0.9); }
 }
+
+/* ═══════════════ FLUID CABLE FIELD — VISUAL OVERRIDE ═══════════════ */
+#dither-bg {
+    opacity: .94;
+    filter: blur(1.15px) saturate(1.12);
+}
+body::before {
+    background:
+        radial-gradient(ellipse 78% 65% at 50% 42%, rgba(4,10,15,.12), transparent 78%),
+        linear-gradient(180deg, rgba(3,5,8,.22), rgba(3,5,8,.48));
+}
+.orb-a { opacity: .24; background: radial-gradient(circle, rgba(111,190,220,.12), transparent 70%); }
+.orb-b { opacity: .22; background: radial-gradient(circle, rgba(120,160,190,.10), transparent 70%); }
+.orb-c { opacity: .18; background: radial-gradient(circle, rgba(160,205,225,.09), transparent 70%); }
+:root {
+    --bg: #030609;
+    --glass: rgba(8,15,21,.43);
+    --surface: rgba(180,220,240,.035);
+    --surface-hover: rgba(180,220,240,.075);
+    --glass-border: rgba(177,213,231,.12);
+    --glass-strong-border: rgba(190,225,244,.22);
+    --text-dim: rgba(218,235,245,.48);
+    --text-mid: rgba(225,240,248,.7);
+    --accent: #e7f5fb;
+}
+.site-nav { background: rgba(3,7,10,.58); border-bottom-color: rgba(185,220,240,.12); }
+.site-nav.scrolled { background: rgba(3,7,10,.86); }
+.feature-card, .download-panel, .launcher-window {
+    background-color: rgba(8,16,22,.52);
+    border-color: rgba(184,220,239,.14);
+    box-shadow: 0 22px 80px rgba(0,0,0,.26), inset 0 1px rgba(255,255,255,.035);
+}
+.feature-card:hover { border-color: rgba(196,231,248,.3); }
+.btn-primary { box-shadow: 0 0 28px rgba(158,210,235,.12); }
+.btn-primary:hover { box-shadow: 0 8px 44px rgba(140,205,235,.26); }
+@media (prefers-reduced-motion: reduce) {
+    #dither-bg { opacity: .65; }
+}

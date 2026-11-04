@@ -20,140 +20,70 @@ void main(){ gl_Position = vec4(aPos, 0.0, 1.0); }`;
     const FS = `#version 300 es
 precision highp float;
 out vec4 fragColor;
-
-uniform vec3  uColor;
-uniform vec2  uResolution;
+uniform vec3 uColor;
+uniform vec2 uResolution;
 uniform float uTime;
 uniform float uPixelSize;
-uniform int   uShapeType;
-
+uniform int uShapeType;
 const int MAX_CLICKS = 10;
-uniform vec2  uClickPos[MAX_CLICKS];
+uniform vec2 uClickPos[MAX_CLICKS];
 uniform float uClickTimes[MAX_CLICKS];
 
-float Bayer2(vec2 a){ a = floor(a); return fract(a.x / 2.0 + a.y * a.y * 0.75); }
-#define Bayer4(a) (Bayer2(0.5 * (a)) * 0.25 + Bayer2(a))
-#define Bayer8(a) (Bayer4(0.5 * (a)) * 0.25 + Bayer2(a))
-
-float hash11(float n){ return fract(sin(n) * 43758.5453); }
-
-float vnoise(vec3 p)
-{
-    vec3 ip = floor(p);
-    vec3 fp = fract(p);
-
-    float n000 = hash11(dot(ip + vec3(0.0,0.0,0.0), vec3(1.0,57.0,113.0)));
-    float n100 = hash11(dot(ip + vec3(1.0,0.0,0.0), vec3(1.0,57.0,113.0)));
-    float n010 = hash11(dot(ip + vec3(0.0,1.0,0.0), vec3(1.0,57.0,113.0)));
-    float n110 = hash11(dot(ip + vec3(1.0,1.0,0.0), vec3(1.0,57.0,113.0)));
-    float n001 = hash11(dot(ip + vec3(0.0,0.0,1.0), vec3(1.0,57.0,113.0)));
-    float n101 = hash11(dot(ip + vec3(1.0,0.0,1.0), vec3(1.0,57.0,113.0)));
-    float n011 = hash11(dot(ip + vec3(0.0,1.0,1.0), vec3(1.0,57.0,113.0)));
-    float n111 = hash11(dot(ip + vec3(1.0,1.0,1.0), vec3(1.0,57.0,113.0)));
-
-    vec3 w = fp*fp*fp*(fp*(fp*6.0-15.0)+10.0);
-
-    float x00 = mix(n000, n100, w.x);
-    float x10 = mix(n010, n110, w.x);
-    float x01 = mix(n001, n101, w.x);
-    float x11 = mix(n011, n111, w.x);
-
-    float y0 = mix(x00, x10, w.y);
-    float y1 = mix(x01, x11, w.y);
-
-    return mix(y0, y1, w.z) * 2.0 - 1.0;
+float hash(vec2 p) { return fract(sin(dot(p, vec2(127.1,311.7))) * 43758.5453); }
+float noise(vec2 p) {
+    vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);
+    return mix(mix(hash(i),hash(i+vec2(1,0)),f.x),
+               mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x),f.y);
 }
-
-float fbm2(vec2 uv, float t)
-{
-    vec3 p = vec3(uv * 4.0, t);
-    float amp = 1.0;
-    float freq = 1.0;
-    float sum = 1.0;
-    for (int i = 0; i < 5; ++i)
-    {
-        sum += amp * vnoise(p * freq);
-        freq *= 1.25;
-        amp *= 1.0;
-    }
-    return sum * 0.5 + 0.5;
+float fbm(vec2 p) {
+    float v=0.0, a=0.5;
+    for(int i=0;i<4;i++){ v+=noise(p)*a; p=p*2.03+vec2(13.7,7.1); a*=0.5; }
+    return v;
 }
+void main() {
+    vec2 uv=gl_FragCoord.xy/uResolution;
+    float aspect=uResolution.x/uResolution.y;
+    vec2 p=(uv-0.5)*vec2(aspect,1.0);
+    float t=uTime*0.115;
+    float warp=fbm(p*2.2+vec2(t,-t*.7));
+    p.x += (warp-.5)*.19;
+    p.y += (fbm(p*2.8+vec2(-t*.6,t))-.5)*.17;
 
-float maskCircle(vec2 p, float cov)
-{
-    float r = sqrt(cov) * 0.25;
-    float d = length(p - 0.5) - r;
-    float aa = 0.5 * fwidth(d);
-    return cov * (1.0 - smoothstep(-aa, aa, d * 2.0));
-}
-
-float maskTriangle(vec2 p, vec2 id, float cov)
-{
-    bool flip = mod(id.x + id.y, 2.0) > 0.5;
-    if (flip) p.x = 1.0 - p.x;
-    float r = sqrt(cov);
-    float d = p.y - r * (1.0 - p.x);
-    float aa = fwidth(d);
-    return cov * clamp(0.5 - d / aa, 0.0, 1.0);
-}
-
-float maskDiamond(vec2 p, float cov)
-{
-    float r = sqrt(cov) * 0.564;
-    return step(abs(p.x - 0.49) + abs(p.y - 0.49), r);
-}
-
-void main()
-{
-    float pixelSize = uPixelSize;
-    vec2 fragCoord = gl_FragCoord.xy - uResolution * 0.5;
-    float aspectRatio = uResolution.x / uResolution.y;
-
-    vec2 pixelId = floor(fragCoord / pixelSize);
-    vec2 pixelUV = fract(fragCoord / pixelSize);
-
-    float cellPixelSize = 8.0 * pixelSize;
-    vec2 cellId = floor(fragCoord / cellPixelSize);
-    vec2 cellCoord = cellId * cellPixelSize;
-
-    vec2 uv = cellCoord / uResolution * vec2(aspectRatio, 1.0);
-
-    float feed = fbm2(uv, uTime * 0.05);
-    feed = feed * 0.5 - 0.65;
-
-    const float speed = 0.17;
-    const float thickness = 0.13;
-    const float dampT = 2.2;
-    const float dampR = 24.0;
-
-    for (int i = 0; i < MAX_CLICKS; ++i)
-    {
-        vec2 pos = uClickPos[i];
-        if (pos.x < 0.0) continue;
-
-        vec2 cuv = ((pos - uResolution * 0.5 - cellPixelSize * 0.5) / uResolution) * vec2(aspectRatio, 1.0);
-
-        float t = max(uTime - uClickTimes[i], 0.0);
-        float r = distance(uv, cuv);
-
-        float waveR = speed * t;
-        float ring = exp(-pow((r - waveR) / thickness, 2.0));
-        float atten = exp(-dampT * t) * exp(-dampR * r);
-
-        feed = max(feed, ring * atten);
+    for(int i=0;i<MAX_CLICKS;i++){
+        if(uClickPos[i].x<0.0) continue;
+        vec2 cp=(uClickPos[i]/uResolution-.5)*vec2(aspect,1.0);
+        float age=max(uTime-uClickTimes[i],0.0);
+        float d=length(p-cp);
+        float wave=sin(d*22.0-age*5.5)*exp(-d*3.2)*exp(-age*1.15);
+        p += normalize(p-cp+vec2(.0001)) * wave*.035;
     }
 
-    float bayer = Bayer8(fragCoord / uPixelSize) - 0.5;
-    float bw = step(0.5, feed + bayer);
-
-    float coverage = bw;
-    float M;
-    if      (uShapeType == 1) M = maskCircle(pixelUV, coverage);
-    else if (uShapeType == 2) M = maskTriangle(pixelUV, pixelId, coverage);
-    else if (uShapeType == 3) M = maskDiamond(pixelUV, coverage);
-    else                      M = coverage;
-
-    fragColor = vec4(uColor, M);
+    float glow=0.0, core=0.0, haze=0.0;
+    for(int i=0;i<9;i++){
+        float fi=float(i);
+        float lane=(fi-4.0)*.105;
+        float phase=fi*1.71;
+        float curve=lane
+          + sin(p.x*(1.25+fi*.075)+t*1.35+phase)*(.105+fi*.003)
+          + sin(p.x*2.15-t*.72+phase*1.7)*.045
+          + (fbm(vec2(p.x*2.0+phase,t*.35+fi))-.5)*.11;
+        float width=.0065+mod(fi,3.0)*.0012;
+        float d=abs(p.y-curve);
+        float strand=1.0-smoothstep(width,width+.009,d);
+        float halo=exp(-d*(25.0+mod(fi,3.0)*7.0));
+        float shimmer=.72+.28*sin(p.x*8.0-t*2.2+phase);
+        glow += halo*.18*shimmer;
+        core += strand*.72*shimmer;
+        haze += exp(-d*8.0)*.035;
+    }
+    float vignette=1.0-smoothstep(.25,1.05,length((uv-.5)*vec2(aspect*.72,1.0)));
+    float light=clamp(glow+core+haze,0.0,1.0)*(.48+.52*vignette);
+    vec3 silver=vec3(.68,.79,.88);
+    vec3 ice=vec3(.34,.66,.82);
+    float tint=.5+.5*sin(p.x*2.1-t*.8);
+    vec3 col=mix(silver,ice,tint)*light;
+    float alpha=clamp(light*.92,0.0,.88);
+    fragColor=vec4(col,alpha);
 }`;
 
     if (gl) {
@@ -228,7 +158,7 @@ void main()
                 window.addEventListener('pointerdown', (e) => pushRipple(e.clientX, e.clientY));
 
                 gl.uniform3f(uColor, 1, 1, 1);
-                gl.uniform1f(uPixelSize, 4);
+                gl.uniform1f(uPixelSize, 1);
                 gl.uniform1i(uShapeType, 0);
 
                 (function render(now) {
